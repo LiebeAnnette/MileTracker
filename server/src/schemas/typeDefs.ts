@@ -30,6 +30,7 @@ const typeDefs = gql`
     addTrip(startLocation: String!, endLocation: String!): Trip
     register(username: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
+    deleteTrip(_id: ID!): Trip
   }
 `;
 

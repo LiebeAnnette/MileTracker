@@ -3,6 +3,7 @@ import TripForm from "./components/TripForm";
 import TripDashboard from "./components/TripDashboard";
 import TripPDFButton from "./components/TripPDFButton";
 import AuthForm from "./components/AuthForm";
+import LogoutButton from "./components/LogoutButton";
 import { useAuth } from "./context/AuthContext";
 
 const App: React.FC = () => {
@@ -15,6 +16,7 @@ const App: React.FC = () => {
         <AuthForm />
       ) : (
         <>
+          <LogoutButton />
           <TripForm />
           <TripDashboard />
           <TripPDFButton />

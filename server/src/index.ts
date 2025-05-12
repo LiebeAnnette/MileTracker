@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import typeDefs from "./schemas/typeDefs";
 import resolvers from "./schemas/resolvers";
+import { authMiddleware } from "./utils/auth";
 
 dotenv.config();
 const app: Application = express();
@@ -11,6 +12,7 @@ const app: Application = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: authMiddleware,
 });
 
 async function startServer() {

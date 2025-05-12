@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, Types } from "mongoose";
 
 export interface ITrip extends Document {
   startLocation: string;
@@ -6,6 +6,7 @@ export interface ITrip extends Document {
   miles: number;
   date: string;
   weather?: string;
+  user: Types.ObjectId;
 }
 
 const tripSchema = new Schema<ITrip>({
@@ -27,6 +28,11 @@ const tripSchema = new Schema<ITrip>({
   },
   weather: {
     type: String,
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
 });
 

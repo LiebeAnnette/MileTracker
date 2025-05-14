@@ -65,6 +65,52 @@ JWT_SECRET=your_jwt_secret
 OPENROUTE_API_KEY=your_route_api_key
 WEATHER_API_KEY=your_weather_api_key
 
+🔁 Git Branching Strategy
+To keep the main branch clean and production-ready, all development happens through a shared dev branch. Individual features and fixes are built on personal branches, then merged into dev via pull request. Once dev is stable, it’s merged into main.
+
+🛠 Branch Setup
+main — 🚀 Deployed production code
+
+dev — 🧪 Staging branch for active development
+
+yourname/task-name — 🧱 Feature branches off of dev
+
+🧑‍💻 Workflow
+Pull the latest dev branch:
+
+bash
+git checkout dev
+git pull origin dev
+
+Example:
+Create a personal feature branch:
+git checkout -b liebe/navbar
+
+Push your branch:
+git push -u origin liebe/navbar
+Open a pull request into dev when your feature is ready.
+
+✅ Tips:
+
+To keep things clean and collaborative, we follow a [yourname]/[task-name] branch naming format. 
+Use dashes (-) and not spaces. 
+Open PRs into dev, not main.
+
+🌿 Branch Naming Guide
+
+TASK	                                        SUGGESTED BRANCH NAME
+
+CSS and overall UI styling	                    yourname/css-pass
+Create and style the Navbar	                    yourname/navbar
+Build and style the Footer	                    yourname/footer
+Support multiple vehicles	                    yourname/multi-vehicle-support
+Add maintenance reminders (oil, tires, etc.)	yourname/maintenance-reminders
+Improve search with address/state/date filters	yourname/expand-search-filters
+Begin turning the app into a PWA	            yourname/pwa-setup
+Improve PDF layout and appearance	            yourname/pdf-beautification
+
+👏 Credits
+
+Developed by Liebe as the final capstone project for a full-stack JavaScript bootcamp. Built with ❤️, APIs, and very little sleep.
 👏 Credits
 Developed by Liebe as the final capstone project for a full-stack JavaScript bootcamp. Built with ❤️, APIs, and very little sleep.
-

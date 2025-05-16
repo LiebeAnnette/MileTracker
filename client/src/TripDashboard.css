@@ -1,0 +1,67 @@
+:root {
+  --eggplant: #5a3745;
+  --copper: #a77b3d;
+  --harvest-gold: #eda600;
+  --olive: #738904;
+  --brown: #823104;
+  --font-stack: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-container {
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #fdf9f5;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: var(--font-stack);
+  color: #333;
+}
+
+.dashboard-container h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--brown);
+  text-align: center;
+}
+
+.dashboard-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.trip-card {
+  border-left: 5px solid var(--olive);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.trip-card:hover {
+  transform: translateY(-2px);
+}
+
+.trip-card button {
+  margin-top: 0.5rem;
+  background-color: #cc3333;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.trip-card button:hover {
+  background-color: #a62828;
+}
+
+.total-miles {
+  margin-top: 2rem;
+  font-size: 1.25rem;
+  text-align: center;
+  color: var(--copper);
+  font-weight: bold;
+}

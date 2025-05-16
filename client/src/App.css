@@ -18,6 +18,18 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.page-header {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  color: var(--brown);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

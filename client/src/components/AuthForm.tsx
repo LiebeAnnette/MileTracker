@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { useAuth } from "../context/AuthContext";
+import "../AuthForm.css";
 
 const REGISTER = gql`
   mutation Register($username: String!, $password: String!) {
@@ -56,7 +57,7 @@ const AuthForm: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       <h2>{isLogin ? "Login" : "Register"}</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -74,6 +75,7 @@ const AuthForm: React.FC = () => {
       </form>
       <button
         onClick={() => setIsLogin(!isLogin)}
+        className="auth-toggle"
         style={{ marginTop: "0.5rem" }}
       >
         {isLogin

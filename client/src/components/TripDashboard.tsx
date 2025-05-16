@@ -1,5 +1,6 @@
 import React from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import "../TripDashboard.css";
 
 const GET_TRIPS = gql`
   query GetTrips {
@@ -33,11 +34,15 @@ const TripDashboard: React.FC = () => {
   if (error) return <p>Error loading trips: {error.message}</p>;
 
   return (
-    <div>
+    <div className="dashboard-container">
       <h2>All Trips</h2>
       <ul>
         {data.trips.map((trip: any) => (
-          <li key={trip._id} style={{ marginBottom: "0.75rem" }}>
+          <li
+            key={trip._id}
+            style={{ marginBottom: "0.75rem" }}
+            className="trip-card"
+          >
             <div>
               {trip.startLocation} → {trip.endLocation} | {trip.miles} miles |{" "}
               {trip.weather} | {new Date(trip.date).toLocaleDateString()}
@@ -59,7 +64,7 @@ const TripDashboard: React.FC = () => {
           </li>
         ))}
       </ul>
-      <h3>Total Miles: {data.totalMiles}</h3>
+      <h3 className="total-miles">Total Miles: {data.totalMiles}</h3>
     </div>
   );
 };

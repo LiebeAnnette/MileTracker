@@ -5,6 +5,7 @@ import TripPDFButton from "./components/TripPDFButton";
 import AuthForm from "./components/AuthForm";
 import LogoutButton from "./components/LogoutButton";
 import { useAuth } from "./context/AuthContext";
+// import './App.css';
 
 const App: React.FC = () => {
   const { token } = useAuth();
@@ -17,9 +18,9 @@ const App: React.FC = () => {
       ) : (
         <>
           <LogoutButton />
+          <TripPDFButton />
           <TripForm />
           <TripDashboard />
-          <TripPDFButton />
         </>
       )}
     </div>

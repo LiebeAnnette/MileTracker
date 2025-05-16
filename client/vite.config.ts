@@ -1,8 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// Replace this with your actual Render frontend URL
-const allowedHost = "miletracker-client.onrender.com";
+// use this in main branch
+// const allowedHost = "miletracker-client.onrender.com";
+
+// TODO: comment this out when pushing to main
+const allowedHost = "https://miletracker-devclient.onrender.com";
 
 export default defineConfig({
   plugins: [react()],

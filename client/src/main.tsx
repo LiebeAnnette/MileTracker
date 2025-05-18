@@ -15,9 +15,11 @@ import { AuthProvider } from "./context/AuthContext";
 
 // Setup HTTP connection to GraphQL
 const httpLink = createHttpLink({
-  uri: "http://localhost:3001/graphql",
+  // TODO: USE THIS FOR LOCAL TESTING:
+  // uri: "http://localhost:3001/graphql",
 
-  // TODO: USE THIS FOR DEPLOY uri: "https://miletracker-wokk.onrender.com/graphql",
+  // TODO: USE THIS FOR DEPLOY 
+  uri: "https://miletracker-wokk.onrender.com/graphql",
 });
 
 // Attach token to headers

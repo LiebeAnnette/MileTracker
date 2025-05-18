@@ -33,3 +33,10 @@ export const ADD_VEHICLE = gql`
     }
   }
 `;
+export const DELETE_VEHICLE = gql`
+  mutation DeleteVehicle($_id: ID!) {
+    deleteVehicle(_id: $_id) {
+      _id
+    }
+  }
+`;

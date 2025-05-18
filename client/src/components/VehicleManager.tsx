@@ -1,10 +1,19 @@
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_VEHICLES, ADD_VEHICLE } from "../graphql/vehicleQueries";
+import {
+  GET_VEHICLES,
+  ADD_VEHICLE,
+  DELETE_VEHICLE,
+} from "../graphql/vehicleQueries"; // You can split this if you prefer!
 
 const VehicleManager: React.FC = () => {
   const { data, loading, error } = useQuery(GET_VEHICLES);
+
   const [addVehicle] = useMutation(ADD_VEHICLE, {
+    refetchQueries: [{ query: GET_VEHICLES }],
+  });
+
+  const [deleteVehicle] = useMutation(DELETE_VEHICLE, {
     refetchQueries: [{ query: GET_VEHICLES }],
   });
 
@@ -35,6 +44,14 @@ const VehicleManager: React.FC = () => {
       });
     } catch (err) {
       console.error("Failed to add vehicle:", err);
+    }
+  };
+
+  const handleDelete = async (_id: string) => {
+    try {
+      await deleteVehicle({ variables: { _id } });
+    } catch (err) {
+      console.error("Failed to delete vehicle:", err);
     }
   };
 
@@ -81,8 +98,22 @@ const VehicleManager: React.FC = () => {
         <ul>
           {data.vehicles.map((v: any) => (
             <li key={v._id}>
-              🚗 {v.name} ({v.make} {v.vehicleModel}) — Reminder:{" "}
-              {v.maintenanceReminderMiles} miles
+              {v.name} ({v.make} {v.vehicleModel}) — Reminder:{" "}
+              {v.maintenanceReminderMiles} miles{" "}
+              <button
+                onClick={() => handleDelete(v._id)}
+                style={{
+                  marginLeft: "1rem",
+                  backgroundColor: "#cc3333",
+                  color: "white",
+                  border: "none",
+                  padding: "0.2rem 0.5rem",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>

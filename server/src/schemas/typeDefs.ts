@@ -46,6 +46,7 @@ const typeDefs = gql`
       vehicleModel: String
       maintenanceReminderMiles: Float!
     ): Vehicle
+    deleteVehicle(_id: ID!): Vehicle
   }
 `;
 

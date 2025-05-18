@@ -110,6 +110,22 @@ const resolvers = {
         maintenanceReminderMiles,
       });
     },
+    deleteVehicle: async (_: any, { _id }: any, context: any) => {
+      if (!context.user) {
+        throw new Error("Not authenticated");
+      }
+
+      const deleted = await Vehicle.findOneAndDelete({
+        _id,
+        user: context.user._id,
+      });
+
+      if (!deleted) {
+        throw new Error("Vehicle not found or unauthorized");
+      }
+
+      return deleted;
+    },
   },
 
   Trip: {

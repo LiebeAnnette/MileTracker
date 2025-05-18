@@ -7,6 +7,7 @@ import LogoutButton from "./components/LogoutButton";
 import { useAuth } from "./context/AuthContext";
 // import './App.css';
 import VehicleManager from "./components/VehicleManager";
+import MaintenanceAlerts from "./components/MaintenanceAlerts";
 
 const App: React.FC = () => {
   const { token } = useAuth();
@@ -21,6 +22,7 @@ const App: React.FC = () => {
           <LogoutButton />
           <TripPDFButton />
           <VehicleManager />
+          <MaintenanceAlerts />
           <TripForm />
           <TripDashboard />
         </>

@@ -4,6 +4,7 @@ import { calculateMiles } from "../utils/calculateMiles";
 import { getWeather } from "../utils/getWeather";
 import { signToken } from "../utils/auth";
 import Vehicle from "../models/Vehicle";
+import { getVehiclesNeedingMaintenance } from "../utils/getMaintenanceAlerts";
 
 const resolvers = {
   Query: {
@@ -26,6 +27,26 @@ const resolvers = {
     vehicles: async (_: any, __: any, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
       return await Vehicle.find({ user: context.user._id });
+    },
+    maintenanceAlerts: async (_: any, __: any, context: any) => {
+      if (!context.user) throw new Error("Not authenticated");
+
+      const alerts = await getVehiclesNeedingMaintenance(
+        context.user._id.toString()
+      );
+
+      return alerts.map((vehicle: any) => {
+        const totalMiles = vehicle.totalMiles || 0;
+        const threshold = vehicle.maintenanceReminderMiles;
+
+        return {
+          vehicleId: vehicle._id.toString(),
+          vehicleName: vehicle.name,
+          totalMiles,
+          threshold,
+          alert: `${vehicle.name} has reached ${totalMiles} miles and needs maintenance (limit: ${threshold}).`,
+        };
+      });
     },
   },
 

@@ -27,12 +27,20 @@ const typeDefs = gql`
     vehicleModel: String
     maintenanceReminderMiles: Float!
   }
+  type MaintenanceAlert {
+    vehicleId: ID!
+    vehicleName: String!
+    totalMiles: Float!
+    threshold: Float!
+    alert: String!
+  }
 
   type Query {
     trips: [Trip]
     totalMiles: Float
     me: User
     vehicles: [Vehicle]
+    maintenanceAlerts: [MaintenanceAlert]
   }
 
   type Mutation {

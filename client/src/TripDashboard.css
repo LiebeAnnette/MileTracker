@@ -11,7 +11,7 @@
   max-width: 700px;
   margin: 3rem auto;
   padding: 2rem;
-  background-color: #fdf9f5;
+  background-color: #96697b;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   font-family: var(--font-stack);
@@ -60,7 +60,7 @@
 
 .total-miles {
   margin-top: 2rem;
-  font-size: 1.25rem;
+  font-size: 2rem;
   text-align: center;
   color: var(--copper);
   font-weight: bold;

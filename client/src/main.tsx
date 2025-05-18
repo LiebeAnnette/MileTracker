@@ -15,7 +15,9 @@ import { AuthProvider } from "./context/AuthContext";
 
 // Setup HTTP connection to GraphQL
 const httpLink = createHttpLink({
-  uri: "https://miletracker-wokk.onrender.com/graphql",
+  uri: "http://localhost:3001/graphql",
+
+  // TODO: USE THIS FOR DEPLOY uri: "https://miletracker-wokk.onrender.com/graphql",
 });
 
 // Attach token to headers
@@ -24,7 +26,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-    
+
       Authorization: token ? `Bearer ${token}` : "",
     },
   };

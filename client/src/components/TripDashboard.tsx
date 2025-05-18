@@ -11,6 +11,10 @@ const GET_TRIPS = gql`
       miles
       date
       weather
+      vehicle {
+        name
+        make
+      }
     }
     totalMiles
   }
@@ -45,7 +49,9 @@ const TripDashboard: React.FC = () => {
           >
             <div>
               {trip.startLocation} → {trip.endLocation} | {trip.miles} miles |{" "}
-              {trip.weather} | {new Date(trip.date).toLocaleDateString()}
+              {trip.weather} | {new Date(trip.date).toLocaleDateString()} |{" "}
+              Vehicle: {trip.vehicle?.name ?? "N/A"}{" "}
+              {trip.vehicle?.make && `(${trip.vehicle.make})`}
             </div>
             <button
               onClick={() => deleteTrip({ variables: { _id: trip._id } })}

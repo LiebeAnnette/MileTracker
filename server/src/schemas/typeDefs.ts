@@ -41,6 +41,7 @@ const typeDefs = gql`
     me: User
     vehicles: [Vehicle]
     maintenanceAlerts: [MaintenanceAlert]
+    getTripsByVehicle(vehicleId: ID!): [Trip]
   }
 
   type Mutation {

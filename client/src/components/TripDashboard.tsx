@@ -1,7 +1,8 @@
 import React from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import { useAuth } from "../context/AuthContext"; // import the auth context
 import "../TripDashboard.css";
-import { GET_MAINTENANCE_ALERTS } from "../graphql/maintenanceQueries";
+import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
 
 const GET_TRIPS = gql`
   query GetTrips {
@@ -30,8 +31,16 @@ const DELETE_TRIP = gql`
 `;
 
 const TripDashboard: React.FC = () => {
+  const { token } = useAuth(); // Get token from AuthContext
+
+  // Fetch trips
   const { data, loading, error } = useQuery(GET_TRIPS);
-  const { data: alertData } = useQuery(GET_MAINTENANCE_ALERTS);
+
+  // Fetch maintenance alerts only if authenticated (skip if no token)
+  const { data: alertData } = useQuery(GET_ALERT_MESSAGES, {
+    skip: typeof token !== "string" || !token, // Skip if no token is present (user not authenticated)
+  });
+
   const [deleteTrip] = useMutation(DELETE_TRIP, {
     refetchQueries: ["GetTrips"],
   });

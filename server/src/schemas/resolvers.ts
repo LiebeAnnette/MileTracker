@@ -8,9 +8,15 @@ import { getVehiclesNeedingMaintenance } from "../utils/getMaintenanceAlerts";
 
 const resolvers = {
   Query: {
-    trips: async (_: any, __: any, context: any) => {
+    trips: async (_: any, args: { vehicleId?: string }, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
-      return await Trip.find({ user: context.user._id });
+
+      const filter: any = { user: context.user._id };
+      if (args.vehicleId) {
+        filter.vehicle = args.vehicleId;
+      }
+
+      return await Trip.find(filter);
     },
 
     totalMiles: async (_: any, __: any, context: any) => {
@@ -46,6 +52,13 @@ const resolvers = {
           threshold,
           alert: `${vehicle.name} has reached ${totalMiles} miles and needs maintenance (limit: ${threshold}).`,
         };
+      });
+    },
+    getTripsByVehicle: async (_: any, { vehicleId }: any, context: any) => {
+      if (!context.user) throw new Error("Not authenticated");
+      return await Trip.find({
+        user: context.user._id,
+        vehicle: vehicleId,
       });
     },
   },

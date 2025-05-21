@@ -1,9 +1,11 @@
-import React from "react";
-import { gql, useQuery } from "@apollo/client";
+import React, { useState } from "react";
+import { useQuery, gql } from "@apollo/client";
 import jsPDF from "jspdf";
+import { GET_VEHICLES } from "../graphql/vehicleQueries";
+import { GET_TRIPS_BY_VEHICLE } from "../graphql/tripQueries";
 
-const GET_TRIPS = gql`
-  query GetTrips {
+const GET_ALL_TRIPS = gql`
+  query GetAllTrips {
     trips {
       startLocation
       endLocation
@@ -18,22 +20,49 @@ const GET_TRIPS = gql`
 `;
 
 const TripPDFButton: React.FC = () => {
-  const { data, loading, error } = useQuery(GET_TRIPS);
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>("");
+
+  // Vehicles for dropdown
+  const { data: vehicleData, loading: loadingVehicles } =
+    useQuery(GET_VEHICLES);
+
+  // Fetch all trips if "All Vehicles" is selected
+  const {
+    data: allTripsData,
+    loading: loadingAllTrips,
+    error: errorAllTrips,
+  } = useQuery(GET_ALL_TRIPS, {
+    skip: selectedVehicleId !== "", // only run if "All Vehicles" is selected
+  });
+
+  // Fetch trips for specific vehicle
+  const {
+    data: filteredTripsData,
+    loading: loadingFiltered,
+    error: errorFiltered,
+  } = useQuery(GET_TRIPS_BY_VEHICLE, {
+    variables: { vehicleId: selectedVehicleId },
+    skip: selectedVehicleId === "", // skip if showing all
+  });
+
+  const trips =
+    selectedVehicleId === ""
+      ? allTripsData?.trips
+      : filteredTripsData?.getTripsByVehicle;
+  const loading = selectedVehicleId === "" ? loadingAllTrips : loadingFiltered;
+  const error = selectedVehicleId === "" ? errorAllTrips : errorFiltered;
 
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.setFontSize(16);
-    doc.setTextColor(40);
     doc.text("MileTracker Trip Report", 10, 15);
 
     doc.setFontSize(12);
     let y = 30;
 
-    data.trips.forEach((trip: any, index: number) => {
-      doc.setTextColor(0);
+    trips.forEach((trip: any, index: number) => {
       doc.text(`Trip ${index + 1}`, 10, y);
       y += 6;
-
       doc.setFontSize(10);
       doc.text(`From: ${trip.startLocation}`, 10, y);
       y += 5;
@@ -48,7 +77,6 @@ const TripPDFButton: React.FC = () => {
       doc.text(`Vehicle: ${trip.vehicle?.name || "N/A"}`, 10, y);
       y += 7;
 
-      // Draw separator
       doc.setDrawColor(180);
       doc.line(10, y, 200, y);
       y += 10;
@@ -64,13 +92,36 @@ const TripPDFButton: React.FC = () => {
     doc.save("trip-report.pdf");
   };
 
-  if (loading) return <p>Loading PDF...</p>;
-  if (error) return <p>Error loading trips.</p>;
-
   return (
-    <button onClick={generatePDF} style={{ marginTop: "1rem" }}>
-      Download Trip PDF
-    </button>
+    <div>
+      <h3>Export Trips by Vehicle</h3>
+
+      {loadingVehicles ? (
+        <p>Loading vehicles...</p>
+      ) : (
+        <select
+          value={selectedVehicleId}
+          onChange={(e) => setSelectedVehicleId(e.target.value)}
+        >
+          <option value="">All Vehicles</option>
+          {vehicleData?.vehicles.map((v: any) => (
+            <option key={v._id} value={v._id}>
+              {v.name} ({v.make} {v.vehicleModel})
+            </option>
+          ))}
+        </select>
+      )}
+
+      {loading ? (
+        <p>Loading trips...</p>
+      ) : error ? (
+        <p>Error loading trips.</p>
+      ) : (
+        <button onClick={generatePDF} style={{ marginTop: "1rem" }}>
+          Download Trip PDF
+        </button>
+      )}
+    </div>
   );
 };
 

@@ -1,21 +1,17 @@
+// src/components/MaintenanceAlerts.tsx
 import React from "react";
-import { gql, useQuery } from "@apollo/client";
-
-const GET_MAINTENANCE_ALERTS = gql`
-  query GetMaintenanceAlerts {
-    maintenanceAlerts {
-      _id
-      name
-      make
-      vehicleModel
-      maintenanceReminderMiles
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
+import { useAuth } from "../context/AuthContext";
+import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
 
 const MaintenanceAlerts: React.FC = () => {
-  const { data, loading, error } = useQuery(GET_MAINTENANCE_ALERTS);
+  const { token } = useAuth();
 
+  const { data, loading, error } = useQuery(GET_ALERT_MESSAGES, {
+    skip: !token,
+  });
+
+  if (!token) return null;
   if (loading) return <p>Checking maintenance...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -24,14 +20,19 @@ const MaintenanceAlerts: React.FC = () => {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: "#fff3cd",
+        padding: "1rem",
+        marginBottom: "1rem",
+        border: "1px solid #ffeeba",
+        borderRadius: "4px",
+      }}
+    >
       <h3>🔧 Maintenance Needed</h3>
       <ul>
         {data.maintenanceAlerts.map((v: any) => (
-          <li key={v._id}>
-            {v.name} ({v.make} {v.vehicleModel}) — Exceeded{" "}
-            {v.maintenanceReminderMiles} miles
-          </li>
+          <li key={v.vehicleId}>{v.alert}</li>
         ))}
       </ul>
     </div>

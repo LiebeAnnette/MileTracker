@@ -10,6 +10,9 @@ const GET_TRIPS = gql`
       miles
       date
       weather
+      vehicle {
+        name
+      }
     }
   }
 `;
@@ -19,30 +22,50 @@ const TripPDFButton: React.FC = () => {
 
   const generatePDF = () => {
     const doc = new jsPDF();
-    doc.setFontSize(12);
-    doc.text("Trip Report", 10, 10);
+    doc.setFontSize(16);
+    doc.setTextColor(40);
+    doc.text("MileTracker Trip Report", 10, 15);
 
-    let y = 20;
+    doc.setFontSize(12);
+    let y = 30;
+
     data.trips.forEach((trip: any, index: number) => {
-      doc.text(
-        `${index + 1}. ${trip.startLocation} → ${trip.endLocation}, ${
-          trip.miles
-        } miles, ${trip.weather}, ${new Date(trip.date).toLocaleDateString()}`,
-        10,
-        y
-      );
+      doc.setTextColor(0);
+      doc.text(`Trip ${index + 1}`, 10, y);
+      y += 6;
+
+      doc.setFontSize(10);
+      doc.text(`From: ${trip.startLocation}`, 10, y);
+      y += 5;
+      doc.text(`To: ${trip.endLocation}`, 10, y);
+      y += 5;
+      doc.text(`Distance: ${trip.miles.toFixed(2)} miles`, 10, y);
+      y += 5;
+      doc.text(`Date: ${new Date(trip.date).toLocaleDateString()}`, 10, y);
+      y += 5;
+      doc.text(`Weather: ${trip.weather}`, 10, y);
+      y += 5;
+      doc.text(`Vehicle: ${trip.vehicle?.name || "N/A"}`, 10, y);
+      y += 7;
+
+      // Draw separator
+      doc.setDrawColor(180);
+      doc.line(10, y, 200, y);
       y += 10;
+
       if (y > 270) {
         doc.addPage();
         y = 20;
       }
+
+      doc.setFontSize(12);
     });
 
     doc.save("trip-report.pdf");
   };
 
-  if (loading) return <p>Loading PDF button...</p>;
-  if (error) return <p>Error loading trips for PDF.</p>;
+  if (loading) return <p>Loading PDF...</p>;
+  if (error) return <p>Error loading trips.</p>;
 
   return (
     <button onClick={generatePDF} style={{ marginTop: "1rem" }}>

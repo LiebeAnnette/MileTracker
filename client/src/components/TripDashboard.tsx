@@ -1,5 +1,7 @@
 import React from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import "../TripDashboard.css";
+import { GET_MAINTENANCE_ALERTS } from "../graphql/maintenanceQueries";
 
 const GET_TRIPS = gql`
   query GetTrips {
@@ -10,6 +12,10 @@ const GET_TRIPS = gql`
       miles
       date
       weather
+      vehicle {
+        name
+        make
+      }
     }
     totalMiles
   }
@@ -25,6 +31,7 @@ const DELETE_TRIP = gql`
 
 const TripDashboard: React.FC = () => {
   const { data, loading, error } = useQuery(GET_TRIPS);
+  const { data: alertData } = useQuery(GET_MAINTENANCE_ALERTS);
   const [deleteTrip] = useMutation(DELETE_TRIP, {
     refetchQueries: ["GetTrips"],
   });
@@ -33,14 +40,50 @@ const TripDashboard: React.FC = () => {
   if (error) return <p>Error loading trips: {error.message}</p>;
 
   return (
-    <div>
+    <div className="dashboard-container">
+      {alertData?.maintenanceAlerts?.length > 0 && (
+        <div
+          style={{
+            backgroundColor: "#fff3cd",
+            padding: "1rem",
+            marginBottom: "1rem",
+            border: "1px solid #ffeeba",
+            borderRadius: "4px",
+          }}
+        >
+          <h4>Maintenance Alerts</h4>
+          <ul>
+            {alertData.maintenanceAlerts.map((a: any) => (
+              <li key={a.vehicleId}>
+                {a.vehicleName} has reached{" "}
+                {a.totalMiles.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{" "}
+                miles and needs maintenance (limit:{" "}
+                {a.threshold.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+                ).
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <h2>All Trips</h2>
       <ul>
         {data.trips.map((trip: any) => (
-          <li key={trip._id} style={{ marginBottom: "0.75rem" }}>
+          <li
+            key={trip._id}
+            style={{ marginBottom: "0.75rem" }}
+            className="trip-card"
+          >
             <div>
               {trip.startLocation} → {trip.endLocation} | {trip.miles} miles |{" "}
-              {trip.weather} | {new Date(trip.date).toLocaleDateString()}
+              {trip.weather} | {new Date(trip.date).toLocaleDateString()} |{" "}
+              Vehicle: {trip.vehicle?.name ?? "N/A"}{" "}
+              {trip.vehicle?.make && `(${trip.vehicle.make})`}
             </div>
             <button
               onClick={() => deleteTrip({ variables: { _id: trip._id } })}
@@ -59,7 +102,13 @@ const TripDashboard: React.FC = () => {
           </li>
         ))}
       </ul>
-      <h3>Total Miles: {data.totalMiles}</h3>
+      <h3 className="total-miles">
+        Total Miles:{" "}
+        {data.totalMiles.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </h3>
     </div>
   );
 };

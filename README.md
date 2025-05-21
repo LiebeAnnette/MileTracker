@@ -54,12 +54,15 @@ cd server
 npm install
 npm run start
 ```
+
 Run the Front End
+
 ```bash
 cd client
 npm install
 npm run dev
 ```
+
 MONGODB_URI=your_mongo_uri
 JWT_SECRET=your_jwt_secret
 OPENROUTE_API_KEY=your_route_api_key
@@ -92,25 +95,23 @@ Open a pull request into dev when your feature is ready.
 
 ✅ Tips:
 
-To keep things clean and collaborative, we follow a [yourname]/[task-name] branch naming format. 
-Use dashes (-) and not spaces. 
+To keep things clean and collaborative, we follow a [yourname]/[task-name] branch naming format.
+Use dashes (-) and not spaces.
 Open PRs into dev, not main.
 
 🌿 Branch Naming Guide
 
-TASK	                                        SUGGESTED BRANCH NAME
+TASK SUGGESTED BRANCH NAME
 
-CSS and overall UI styling	                    yourname/css-pass
-Create and style the Navbar	                    yourname/navbar
-Build and style the Footer	                    yourname/footer
-Support multiple vehicles	                    yourname/multi-vehicle-support
-Add maintenance reminders (oil, tires, etc.)	yourname/maintenance-reminders
-Improve search with address/state/date filters	yourname/expand-search-filters
-Begin turning the app into a PWA	            yourname/pwa-setup
-Improve PDF layout and appearance	            yourname/pdf-beautification
+CSS and overall UI styling yourname/css-pass
+Create and style the Navbar yourname/navbar
+Build and style the Footer yourname/footer
+Support multiple vehicles yourname/multi-vehicle-support
+Add maintenance reminders (oil, tires, etc.) yourname/maintenance-reminders
+Improve search with address/state/date filters yourname/expand-search-filters
+Begin turning the app into a PWA yourname/pwa-setup
+Improve PDF layout and appearance yourname/pdf-beautification
 
 👏 Credits
 
-Developed by Liebe as the final capstone project for a full-stack JavaScript bootcamp. Built with ❤️, APIs, and very little sleep.
-👏 Credits
-Developed by Liebe as the final capstone project for a full-stack JavaScript bootcamp. Built with ❤️, APIs, and very little sleep.
+Developed by Liebe &? as the final capstone project for a full-stack JavaScript bootcamp. Built with ❤️, APIs, and very little sleep.

@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import typeDefs from "./schemas/typeDefs";
 import resolvers from "./schemas/resolvers";
 import { authMiddleware } from "./utils/auth";
+import cors from "cors";
 
 dotenv.config();
 const app: Application = express();
@@ -17,6 +18,9 @@ const server = new ApolloServer({
 
 async function startServer() {
   await server.start();
+  app.use(cors());
+  app.use(express.json());
+
   server.applyMiddleware({ app });
 
   const PORT = process.env.PORT || 3001;

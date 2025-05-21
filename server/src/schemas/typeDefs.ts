@@ -8,6 +8,7 @@ const typeDefs = gql`
     miles: Float!
     date: String!
     weather: String
+    vehicle: Vehicle
   }
 
   type User {
@@ -19,18 +20,41 @@ const typeDefs = gql`
     token: String!
     user: User!
   }
+  type Vehicle {
+    _id: ID!
+    name: String!
+    make: String
+    vehicleModel: String
+    maintenanceReminderMiles: Float!
+  }
+  type MaintenanceAlert {
+    vehicleId: ID!
+    vehicleName: String!
+    totalMiles: Float!
+    threshold: Float!
+    alert: String!
+  }
 
   type Query {
     trips: [Trip]
     totalMiles: Float
     me: User
+    vehicles: [Vehicle]
+    maintenanceAlerts: [MaintenanceAlert]
   }
 
   type Mutation {
-    addTrip(startLocation: String!, endLocation: String!): Trip
+    addTrip(startLocation: String!, endLocation: String!, vehicleId: ID!): Trip
     register(username: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
     deleteTrip(_id: ID!): Trip
+    addVehicle(
+      name: String!
+      make: String
+      vehicleModel: String
+      maintenanceReminderMiles: Float!
+    ): Vehicle
+    deleteVehicle(_id: ID!): Vehicle
   }
 `;
 

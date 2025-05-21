@@ -7,6 +7,7 @@ export interface ITrip extends Document {
   date: string;
   weather?: string;
   user: Types.ObjectId;
+  vehicle: Types.ObjectId;
 }
 
 const tripSchema = new Schema<ITrip>({
@@ -32,6 +33,11 @@ const tripSchema = new Schema<ITrip>({
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",
+    required: true,
+  },
+  vehicle: {
+    type: Schema.Types.ObjectId,
+    ref: "Vehicle",
     required: true,
   },
 });

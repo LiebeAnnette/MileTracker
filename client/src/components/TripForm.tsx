@@ -78,6 +78,11 @@ const US_STATES = [
   "WY",
 ];
 
+const getTodayDate = (): string => {
+  const today = new Date();
+  return today.toISOString().split("T")[0]; // "YYYY-MM-DD"
+};
+
 const TripForm: React.FC = () => {
   const [formState, setFormState] = useState({
     startStreet: "",
@@ -87,7 +92,7 @@ const TripForm: React.FC = () => {
     endCity: "",
     endState: "",
     vehicleId: "",
-    departureDate: "",
+    departureDate: getTodayDate(),
   });
 
   const [confirmation, setConfirmation] = useState<{

@@ -98,6 +98,8 @@ const resolvers = {
       context: any
     ) => {
       if (!context.user) throw new Error("Not authenticated");
+      console.log("Start location:", startLocation);
+      console.log("End location:", endLocation);
 
       const miles = await calculateMiles(startLocation, endLocation);
       const weather = await getWeather(endLocation);

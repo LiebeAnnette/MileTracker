@@ -15,24 +15,33 @@ interface OpenRouteResponse {
   }[];
 }
 
+interface ORSGeocodeResponse {
+  features: {
+    geometry: { coordinates: [number, number] };
+  }[];
+}
+
 async function getCoordinates(location: string): Promise<[number, number]> {
-  const geoRes = await axios.get<GeoLocation[]>(
-    "https://api.openweathermap.org/geo/1.0/direct",
+  const apiKey = process.env.ORS_API_KEY;
+
+  const res = await axios.get<ORSGeocodeResponse>(
+    "https://api.openrouteservice.org/geocode/search",
     {
       params: {
-        q: location,
-        limit: 1,
-        appid: process.env.OPENWEATHER_API_KEY,
+        api_key: apiKey,
+        text: location,
+        size: 1,
       },
     }
   );
 
-  if (!geoRes.data.length) {
+  const features = res.data.features;
+  if (!features || !features.length) {
     throw new Error(`No coordinates found for "${location}"`);
   }
 
-  const { lat, lon } = geoRes.data[0];
-  return [lon, lat]; // Note: OpenRouteService requires [lon, lat]
+  const [lon, lat] = features[0].geometry.coordinates;
+  return [lon, lat];
 }
 
 export async function calculateMiles(

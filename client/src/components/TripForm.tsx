@@ -80,7 +80,10 @@ const US_STATES = [
 
 const getTodayDate = (): string => {
   const today = new Date();
-  return today.toISOString().split("T")[0]; // "YYYY-MM-DD"
+  const offsetDate = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+  );
+  return offsetDate.toISOString().split("T")[0];
 };
 
 const TripForm: React.FC = () => {

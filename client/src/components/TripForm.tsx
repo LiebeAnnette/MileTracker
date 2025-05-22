@@ -112,7 +112,6 @@ const TripForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const {
       startStreet,
       startCity,
@@ -125,10 +124,8 @@ const TripForm: React.FC = () => {
     } = formState;
 
     if (
-      !startStreet ||
       !startCity ||
       !startState ||
-      !endStreet ||
       !endCity ||
       !endState ||
       !vehicleId ||
@@ -137,8 +134,12 @@ const TripForm: React.FC = () => {
       return;
     }
 
-    const startLocation = `${startStreet}, ${startCity}, ${startState}`;
-    const endLocation = `${endStreet}, ${endCity}, ${endState}`;
+    const startLocation = `${
+      startStreet ? startStreet + ", " : ""
+    }${startCity}, ${startState}`;
+    const endLocation = `${
+      endStreet ? endStreet + ", " : ""
+    }${endCity}, ${endState}`;
 
     try {
       const result = await addTrip({
@@ -187,7 +188,7 @@ const TripForm: React.FC = () => {
         <h4>Start Location</h4>
         <input
           name="startStreet"
-          placeholder="Street"
+          placeholder="Street (optional)"
           value={formState.startStreet}
           onChange={handleChange}
         />
@@ -196,11 +197,13 @@ const TripForm: React.FC = () => {
           placeholder="City"
           value={formState.startCity}
           onChange={handleChange}
+          required
         />
         <select
           name="startState"
           value={formState.startState}
           onChange={handleChange}
+          required
         >
           <option value="">Select State</option>
           {US_STATES.map((abbr) => (
@@ -213,7 +216,7 @@ const TripForm: React.FC = () => {
         <h4>End Location</h4>
         <input
           name="endStreet"
-          placeholder="Street"
+          placeholder="Street (optional)"
           value={formState.endStreet}
           onChange={handleChange}
         />
@@ -222,11 +225,13 @@ const TripForm: React.FC = () => {
           placeholder="City"
           value={formState.endCity}
           onChange={handleChange}
+          required
         />
         <select
           name="endState"
           value={formState.endState}
           onChange={handleChange}
+          required
         >
           <option value="">Select State</option>
           {US_STATES.map((abbr) => (

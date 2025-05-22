@@ -57,8 +57,8 @@ const VehicleManager: React.FC = () => {
 
   return (
     <div>
-      <h2>Your Vehicles</h2>
-
+      {/* <h2>Your Vehicles</h2> */}
+      <button type="submit">Add Vehicle</button>
       <form onSubmit={handleSubmit}>
         <input
           name="name"
@@ -87,7 +87,6 @@ const VehicleManager: React.FC = () => {
           onChange={handleChange}
           required
         />
-        <button type="submit">Add Vehicle</button>
       </form>
 
       {loading ? (

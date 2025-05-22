@@ -29,7 +29,7 @@ const MaintenanceAlerts: React.FC = () => {
         borderRadius: "4px",
       }}
     >
-      <h3>🔧 Maintenance Needed</h3>
+      <h3>Maintenance Needed</h3>
       <ul>
         {data.maintenanceAlerts.map((v: any) => (
           <li key={v.vehicleId}>{v.alert}</li>

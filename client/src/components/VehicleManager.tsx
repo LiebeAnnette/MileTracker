@@ -6,6 +6,7 @@ import {
   DELETE_VEHICLE,
   UPDATE_VEHICLE,
 } from "../graphql/vehicleQueries"; // You can split this if you prefer!
+import "../../styles/vehicleManagerStyles.css"
 
 const VehicleManager: React.FC = () => {
   const { data, loading, error } = useQuery(GET_VEHICLES);
@@ -71,7 +72,7 @@ const VehicleManager: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="addVehicle">
       {/* <h2>Your Vehicles</h2> */}
 
       <form onSubmit={handleSubmit}>
@@ -111,9 +112,9 @@ const VehicleManager: React.FC = () => {
       ) : error ? (
         <p>Error loading vehicles: {error.message}</p>
       ) : (
-        <ul>
+        <div className = "vehicleGrid">
           {data.vehicles.map((v: any) => (
-            <li key={v._id}>
+            <div key={v._id}>
               {v.name} ({v.make} {v.vehicleModel}) — Reminder:{" "}
               {v.maintenanceReminderMiles} miles{" "}
               <button
@@ -148,9 +149,9 @@ const VehicleManager: React.FC = () => {
               >
                 Delete
               </button>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

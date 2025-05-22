@@ -7,11 +7,13 @@ const ADD_TRIP = gql`
     $startLocation: String!
     $endLocation: String!
     $vehicleId: ID!
+    $departureDate: String!
   ) {
     addTrip(
       startLocation: $startLocation
       endLocation: $endLocation
       vehicleId: $vehicleId
+      departureDate: $departureDate
     ) {
       _id
       startLocation
@@ -85,6 +87,7 @@ const TripForm: React.FC = () => {
     endCity: "",
     endState: "",
     vehicleId: "",
+    departureDate: "",
   });
 
   const [confirmation, setConfirmation] = useState<{
@@ -118,6 +121,7 @@ const TripForm: React.FC = () => {
       endCity,
       endState,
       vehicleId,
+      departureDate,
     } = formState;
 
     if (
@@ -127,7 +131,8 @@ const TripForm: React.FC = () => {
       !endStreet ||
       !endCity ||
       !endState ||
-      !vehicleId
+      !vehicleId ||
+      !departureDate
     ) {
       return;
     }
@@ -137,7 +142,7 @@ const TripForm: React.FC = () => {
 
     try {
       const result = await addTrip({
-        variables: { startLocation, endLocation, vehicleId },
+        variables: { startLocation, endLocation, vehicleId, departureDate },
       });
 
       const { miles, weather } = result.data.addTrip;
@@ -151,6 +156,7 @@ const TripForm: React.FC = () => {
         endCity: "",
         endState: "",
         vehicleId: "",
+        departureDate: "",
       });
     } catch (err) {
       console.error("Error adding trip:", err);
@@ -229,6 +235,15 @@ const TripForm: React.FC = () => {
             </option>
           ))}
         </select>
+
+        <h4>Departure Date</h4>
+        <input
+          type="date"
+          name="departureDate"
+          value={formState.departureDate}
+          onChange={handleChange}
+          required
+        />
 
         <button type="submit" disabled={loading}>
           {loading ? "Adding..." : "Add Trip"}

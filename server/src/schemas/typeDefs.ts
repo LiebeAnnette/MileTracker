@@ -45,7 +45,12 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addTrip(startLocation: String!, endLocation: String!, vehicleId: ID!): Trip
+    addTrip(
+      startLocation: String!
+      endLocation: String!
+      vehicleId: ID!
+      departureDate: String!
+    ): Trip
     register(username: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
     deleteTrip(_id: ID!): Trip

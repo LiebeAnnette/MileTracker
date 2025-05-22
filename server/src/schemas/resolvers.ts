@@ -94,7 +94,7 @@ const resolvers = {
 
     addTrip: async (
       _: any,
-      { startLocation, endLocation, vehicleId }: any,
+      { startLocation, endLocation, vehicleId, departureDate }: any,
       context: any
     ) => {
       if (!context.user) throw new Error("Not authenticated");
@@ -102,8 +102,8 @@ const resolvers = {
       console.log("End location:", endLocation);
 
       const miles = await calculateMiles(startLocation, endLocation);
-      const weather = await getWeather(endLocation);
-      const date = new Date().toISOString();
+      const weather = await getWeather(endLocation, departureDate);
+      const date = departureDate
 
       const newTrip = await Trip.create({
         startLocation,

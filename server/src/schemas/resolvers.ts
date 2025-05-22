@@ -162,6 +162,22 @@ const resolvers = {
 
       return deleted;
     },
+    updateVehicle: async (_: any, { _id, name, maintenanceReminderMiles }: any, context: any) => {
+  if (!context.user) throw new Error("Not authenticated");
+
+  const update: any = {};
+  if (name !== undefined) update.name = name;
+  if (maintenanceReminderMiles !== undefined) update.maintenanceReminderMiles = maintenanceReminderMiles;
+
+  const updatedVehicle = await Vehicle.findOneAndUpdate(
+    { _id, user: context.user._id },
+    update,
+    { new: true }
+  );
+
+  if (!updatedVehicle) throw new Error("Vehicle not found or unauthorized");
+  return updatedVehicle;
+},
   },
 
   Trip: {

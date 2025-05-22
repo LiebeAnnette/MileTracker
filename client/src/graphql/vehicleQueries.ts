@@ -40,3 +40,21 @@ export const DELETE_VEHICLE = gql`
     }
   }
 `;
+
+export const UPDATE_VEHICLE = gql`
+  mutation UpdateVehicle(
+    $_id: ID!
+    $name: String
+    $maintenanceReminderMiles: Float
+  ) {
+    updateVehicle(
+      _id: $_id
+      name: $name
+      maintenanceReminderMiles: $maintenanceReminderMiles
+    ) {
+      _id
+      name
+      maintenanceReminderMiles
+    }
+  }
+`;

@@ -4,6 +4,7 @@ import {
   GET_VEHICLES,
   ADD_VEHICLE,
   DELETE_VEHICLE,
+  UPDATE_VEHICLE,
 } from "../graphql/vehicleQueries"; // You can split this if you prefer!
 
 const VehicleManager: React.FC = () => {
@@ -14,6 +15,10 @@ const VehicleManager: React.FC = () => {
   });
 
   const [deleteVehicle] = useMutation(DELETE_VEHICLE, {
+    refetchQueries: [{ query: GET_VEHICLES }],
+  });
+
+  const [updateVehicle] = useMutation(UPDATE_VEHICLE, {
     refetchQueries: [{ query: GET_VEHICLES }],
   });
 
@@ -54,11 +59,21 @@ const VehicleManager: React.FC = () => {
       console.error("Failed to delete vehicle:", err);
     }
   };
+  const handleUpdate = async (
+    _id: string,
+    updatedFields: { name?: string; maintenanceReminderMiles?: number }
+  ) => {
+    try {
+      await updateVehicle({ variables: { _id, ...updatedFields } });
+    } catch (err) {
+      console.error("Failed to update vehicle:", err);
+    }
+  };
 
   return (
     <div>
       {/* <h2>Your Vehicles</h2> */}
-     
+
       <form onSubmit={handleSubmit}>
         <button type="submit">Add Vehicle</button>
         <input
@@ -101,6 +116,24 @@ const VehicleManager: React.FC = () => {
             <li key={v._id}>
               {v.name} ({v.make} {v.vehicleModel}) — Reminder:{" "}
               {v.maintenanceReminderMiles} miles{" "}
+              <button
+                onClick={() =>
+                  handleUpdate(v._id, {
+                    name: prompt("Enter a new name", v.name) || v.name,
+                  })
+                }
+                style={{
+                  marginLeft: "0.5rem",
+                  backgroundColor: "#337ab7",
+                  color: "white",
+                  border: "none",
+                  padding: "0.2rem 0.5rem",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                Rename
+              </button>
               <button
                 onClick={() => handleDelete(v._id)}
                 style={{

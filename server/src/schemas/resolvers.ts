@@ -45,12 +45,22 @@ const resolvers = {
         const totalMiles = vehicle.totalMiles || 0;
         const threshold = vehicle.maintenanceReminderMiles;
 
+        const formattedMiles = totalMiles.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+
+        const formattedThreshold = threshold.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+
         return {
           vehicleId: vehicle._id.toString(),
           vehicleName: vehicle.name,
           totalMiles,
           threshold,
-          alert: `${vehicle.name} has reached ${totalMiles} miles and needs maintenance (limit: ${threshold}).`,
+          alert: `${vehicle.name} has reached ${formattedMiles} miles and needs maintenance (limit: ${formattedThreshold}).`,
         };
       });
     },
@@ -94,14 +104,16 @@ const resolvers = {
 
     addTrip: async (
       _: any,
-      { startLocation, endLocation, vehicleId }: any,
+      { startLocation, endLocation, vehicleId, departureDate }: any,
       context: any
     ) => {
       if (!context.user) throw new Error("Not authenticated");
+      console.log("Start location:", startLocation);
+      console.log("End location:", endLocation);
 
       const miles = await calculateMiles(startLocation, endLocation);
-      const weather = await getWeather(endLocation);
-      const date = new Date().toISOString();
+      const weather = await getWeather(endLocation, departureDate);
+      const date = departureDate;
 
       const newTrip = await Trip.create({
         startLocation,
@@ -159,6 +171,27 @@ const resolvers = {
       }
 
       return deleted;
+    },
+    updateVehicle: async (
+      _: any,
+      { _id, name, maintenanceReminderMiles }: any,
+      context: any
+    ) => {
+      if (!context.user) throw new Error("Not authenticated");
+
+      const update: any = {};
+      if (name !== undefined) update.name = name;
+      if (maintenanceReminderMiles !== undefined)
+        update.maintenanceReminderMiles = maintenanceReminderMiles;
+
+      const updatedVehicle = await Vehicle.findOneAndUpdate(
+        { _id, user: context.user._id },
+        update,
+        { new: true }
+      );
+
+      if (!updatedVehicle) throw new Error("Vehicle not found or unauthorized");
+      return updatedVehicle;
     },
   },
 

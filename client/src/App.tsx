@@ -1,33 +1,54 @@
 import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import TripForm from "./components/TripForm";
 import TripDashboard from "./components/TripDashboard";
 import TripPDFButton from "./components/TripPDFButton";
 import AuthForm from "./components/AuthForm";
 import LogoutButton from "./components/LogoutButton";
-import { useAuth } from "./context/AuthContext";
-import "./App.css";
 import VehicleManager from "./components/VehicleManager";
 import MaintenanceAlerts from "./components/MaintenanceAlerts";
+import ExpenseManager from "./components/ExpenseManager";
+
+import { useAuth } from "./context/AuthContext";
+import "./App.css";
 
 const App: React.FC = () => {
   const { token } = useAuth();
 
   return (
-    <div>
-      <h1>MileTracker</h1>
-      {!token ? (
-        <AuthForm />
-      ) : (
-        <div className="mainpage">
-          <LogoutButton />
-          <TripPDFButton />
-          <VehicleManager />
-          <MaintenanceAlerts />
-          <TripForm />
-          <TripDashboard />
-        </div>
-      )}
-    </div>
+    <Router>
+      <div>
+        <h1>MileTracker</h1>
+        {!token ? (
+          <AuthForm />
+        ) : (
+          <>
+            <LogoutButton />
+
+            <nav style={{ marginBottom: "1rem" }}>
+              <Link to="/" style={{ marginRight: "1rem" }}>Home</Link>
+              <Link to="/expenses">Trip Expenses</Link>
+            </nav>
+
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <div className="mainpage">
+                    <TripPDFButton />
+                    <VehicleManager />
+                    <MaintenanceAlerts />
+                    <TripForm />
+                    <TripDashboard />
+                  </div>
+               }
+              />
+              <Route path="/expenses" element={<ExpenseManager />} />
+            </Routes>
+          </>
+        )}
+      </div>
+    </Router>
   );
 };
 

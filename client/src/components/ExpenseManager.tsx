@@ -12,7 +12,7 @@ const ExpenseManager: React.FC = () => {
         refetchQueries: [{ query: GET_EXPENSE_FOLDERS }],
     });
 
-    const handleCreateFolder = asynce (e: React.FormEvent) => {
+    const handleCreateFolder = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newTitle.trim()) return;
 

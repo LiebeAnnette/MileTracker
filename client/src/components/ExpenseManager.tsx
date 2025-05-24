@@ -43,11 +43,11 @@ const ExpenseManager: React.FC = () => {
                 <p>Loading folder...</p>
             ) : error ? (
                 <p>Error loading folders: {error.message}</p>
-            ) : DataTransfer.getMyExpsenseFolders.length === 0 ? (
+            ) : data?.getMyExpenseFolders.length === 0 ? (
                 <p>No folders yet. Create your first one!</p>
             ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                    {DataTransfer.getMyExpenseFolders.map((folder: any) => (
+                    {data.getMyExpenseFolders.map((folder: any) => (
                         <FolderCard key={folder._id} folder={folder} />
                     ))}
                 </div>

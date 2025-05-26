@@ -43,11 +43,11 @@ const AuthForm: React.FC = () => {
         variables: { username, password },
       });
 
-      const token = isLogin
-        ? result.data.login.token
-        : result.data.register.token;
+      const data = isLogin ? result.data.login : result.data.register;
+      localStorage.setItem("username", data.user.username); // ✅ Save username!
+      localStorage.setItem("token", data.token); // (optional)
+      setToken(data.token);
 
-      setToken(token);
       setUsername("");
       setPassword("");
     } catch (error: any) {

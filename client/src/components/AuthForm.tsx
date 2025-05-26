@@ -42,12 +42,12 @@ const AuthForm: React.FC = () => {
       const result = await mutation({
         variables: { username, password },
       });
-
-      const token = isLogin
-        ? result.data.login.token
-        : result.data.register.token;
-
-      setToken(token);
+      
+      const data = isLogin ? result.data.login : result.data.register;
+      localStorage.setItem("username", data.use.username); // ✅ Save username!
+      localStorage.setItem("token", data.token); // (optional)
+      setToken(data.token);
+      
       setUsername("");
       setPassword("");
     } catch (error: any) {

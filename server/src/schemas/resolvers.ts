@@ -5,10 +5,11 @@ import { getWeather } from "../utils/getWeather";
 import { signToken } from "../utils/auth";
 import Vehicle from "../models/Vehicle";
 import { getVehiclesNeedingMaintenance } from "../utils/getMaintenanceAlerts";
+import ExpenseFolder from "../models/ExpenseFolder";
 
 const resolvers = {
   Query: {
-    trips: async (_: any, args: { vehicleId?: string }, context: any) => {
+    trips: async (_root: any, args: { vehicleId?: string }, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
 
       const filter: any = { user: context.user._id };
@@ -25,7 +26,7 @@ const resolvers = {
       return trips.reduce((total, trip) => total + trip.miles, 0);
     },
 
-    me: async (_: any, __: any, context: any) => {
+    me: async (_root: any, __: any, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
       return await User.findById(context.user._id);
     },
@@ -70,6 +71,11 @@ const resolvers = {
         user: context.user._id,
         vehicle: vehicleId,
       });
+    },
+
+    getMyExpenseFolders: async (_root: any, _: any, context: any) => {
+      if (!context.user) throw new Error("Not authenticated");
+      return await ExpenseFolder.find({ userId: context.user._id });
     },
   },
 

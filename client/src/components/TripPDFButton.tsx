@@ -56,22 +56,30 @@ const TripPDFButton: React.FC = () => {
     doc.setFontSize(16);
     doc.text("MileTracker Trip Report", 10, 15);
 
-    // Vehicle Name under title
+    // Vehicle Name
     const vehicleName =
       selectedVehicleId === ""
         ? "All Vehicles"
         : vehicleData?.vehicles.find((v: any) => v._id === selectedVehicleId)
             ?.name || "Selected Vehicle";
 
+    // Local timestamp
+    const now = new Date();
+    const localDateTime = now.toLocaleString(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+
     doc.setFontSize(12);
     doc.text(`Vehicle: ${vehicleName}`, 10, 22);
+    doc.text(`Generated: ${localDateTime}`, 10, 28);
 
+    // Summary
     const totalMiles = trips.reduce(
       (sum: number, trip: any) => sum + trip.miles,
       0
     );
-
-    let y = 28;
+    let y = 34;
     doc.text(`Total Trips: ${trips.length}`, 10, y);
     y += 6;
     doc.text(
@@ -84,6 +92,7 @@ const TripPDFButton: React.FC = () => {
     );
     y += 10;
 
+    // Trip Details
     trips.forEach((trip: any, index: number) => {
       doc.text(`Trip ${index + 1}`, 10, y);
       y += 6;

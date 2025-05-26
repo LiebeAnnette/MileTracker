@@ -22,43 +22,67 @@ const GET_ALL_TRIPS = gql`
 const TripPDFButton: React.FC = () => {
   const [selectedVehicleId, setSelectedVehicleId] = useState<string>("");
 
-  // Vehicles for dropdown
   const { data: vehicleData, loading: loadingVehicles } =
     useQuery(GET_VEHICLES);
 
-  // Fetch all trips if "All Vehicles" is selected
   const {
     data: allTripsData,
     loading: loadingAllTrips,
     error: errorAllTrips,
   } = useQuery(GET_ALL_TRIPS, {
-    skip: selectedVehicleId !== "", // only run if "All Vehicles" is selected
+    skip: selectedVehicleId !== "",
   });
 
-  // Fetch trips for specific vehicle
   const {
     data: filteredTripsData,
     loading: loadingFiltered,
     error: errorFiltered,
   } = useQuery(GET_TRIPS_BY_VEHICLE, {
     variables: { vehicleId: selectedVehicleId },
-    skip: selectedVehicleId === "", // skip if showing all
+    skip: selectedVehicleId === "",
   });
 
   const trips =
     selectedVehicleId === ""
       ? allTripsData?.trips
       : filteredTripsData?.getTripsByVehicle;
+
   const loading = selectedVehicleId === "" ? loadingAllTrips : loadingFiltered;
   const error = selectedVehicleId === "" ? errorAllTrips : errorFiltered;
 
   const generatePDF = () => {
     const doc = new jsPDF();
+
     doc.setFontSize(16);
     doc.text("MileTracker Trip Report", 10, 15);
 
+    // Vehicle Name under title
+    const vehicleName =
+      selectedVehicleId === ""
+        ? "All Vehicles"
+        : vehicleData?.vehicles.find((v: any) => v._id === selectedVehicleId)
+            ?.name || "Selected Vehicle";
+
     doc.setFontSize(12);
-    let y = 30;
+    doc.text(`Vehicle: ${vehicleName}`, 10, 22);
+
+    const totalMiles = trips.reduce(
+      (sum: number, trip: any) => sum + trip.miles,
+      0
+    );
+
+    let y = 28;
+    doc.text(`Total Trips: ${trips.length}`, 10, y);
+    y += 6;
+    doc.text(
+      `Total Miles: ${totalMiles.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      10,
+      y
+    );
+    y += 10;
 
     trips.forEach((trip: any, index: number) => {
       doc.text(`Trip ${index + 1}`, 10, y);

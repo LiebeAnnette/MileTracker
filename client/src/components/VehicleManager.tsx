@@ -18,27 +18,21 @@ const VehicleManager: React.FC = () => {
   const [addVehicle] = useMutation(ADD_VEHICLE, {
     refetchQueries: [{ query: GET_VEHICLES }],
   });
-
   const [deleteVehicle] = useMutation(DELETE_VEHICLE, {
     refetchQueries: [{ query: GET_VEHICLES }],
   });
-
   const [updateVehicle] = useMutation(UPDATE_VEHICLE, {
     refetchQueries: [{ query: GET_VEHICLES }],
   });
-
   const [addReminder] = useMutation(ADD_MAINTENANCE_REMINDER, {
     refetchQueries: [{ query: GET_VEHICLES }],
   });
-
   const [updateReminder] = useMutation(UPDATE_MAINTENANCE_REMINDER, {
     refetchQueries: [{ query: GET_VEHICLES }],
   });
-
   const [resetReminder] = useMutation(RESET_MAINTENANCE_REMINDER, {
     refetchQueries: [{ query: GET_VEHICLES }],
   });
-
   const [deleteReminder] = useMutation(DELETE_MAINTENANCE_REMINDER, {
     refetchQueries: [{ query: GET_VEHICLES }],
   });
@@ -47,18 +41,17 @@ const VehicleManager: React.FC = () => {
     name: "",
     make: "",
     vehicleModel: "",
-    maintenanceReminderMiles: 5000,
   });
 
   const [reminderInputs, setReminderInputs] = useState<
-    Record<string, { name: string; mileage: number }>
+    Record<string, { name: string; mileage: string }>
   >({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormState((prev) => ({
       ...prev,
-      [name]: name === "maintenanceReminderMiles" ? parseFloat(value) : value,
+      [name]: value,
     }));
   };
 
@@ -71,7 +64,7 @@ const VehicleManager: React.FC = () => {
       ...prev,
       [vehicleId]: {
         ...prev[vehicleId],
-        [name]: name === "mileage" ? parseFloat(value) : value,
+        [name]: value,
       },
     }));
   };
@@ -79,18 +72,19 @@ const VehicleManager: React.FC = () => {
   const handleAddReminder = async (e: React.FormEvent, vehicleId: string) => {
     e.preventDefault();
     const reminder = reminderInputs[vehicleId];
-    if (!reminder || !reminder.name || isNaN(reminder.mileage)) return;
+    const parsedMileage = parseFloat(reminder?.mileage);
+    if (!reminder || !reminder.name || isNaN(parsedMileage)) return;
     try {
       await addReminder({
         variables: {
           vehicleId,
           name: reminder.name,
-          mileage: reminder.mileage,
+          mileage: parsedMileage,
         },
       });
       setReminderInputs((prev) => ({
         ...prev,
-        [vehicleId]: { name: "", mileage: 5000 },
+        [vehicleId]: { name: "", mileage: "" },
       }));
     } catch (err) {
       console.error("Failed to add reminder:", err);
@@ -105,7 +99,6 @@ const VehicleManager: React.FC = () => {
         name: "",
         make: "",
         vehicleModel: "",
-        maintenanceReminderMiles: 5000,
       });
     } catch (err) {
       console.error("Failed to add vehicle:", err);
@@ -137,8 +130,7 @@ const VehicleManager: React.FC = () => {
     mileage: number
   ) => {
     const newMileage = parseFloat(
-      prompt(`Update mileage for ${name}:`, mileage.toString()) ||
-        mileage.toString()
+      prompt(`Update mileage for ${name}:`, mileage.toString()) || mileage.toString()
     );
     if (!isNaN(newMileage)) {
       await updateReminder({
@@ -178,14 +170,6 @@ const VehicleManager: React.FC = () => {
           value={formState.vehicleModel}
           onChange={handleChange}
         />
-        <input
-          name="maintenanceReminderMiles"
-          type="number"
-          placeholder="Reminder Miles"
-          value={formState.maintenanceReminderMiles}
-          onChange={handleChange}
-          required
-        />
       </form>
 
       {loading ? (
@@ -218,17 +202,13 @@ const VehicleManager: React.FC = () => {
                         Edit
                       </button>
                       <button
-                        onClick={() =>
-                          handleReminderReset(v._id, reminder.name)
-                        }
+                        onClick={() => handleReminderReset(v._id, reminder.name)}
                         style={{ marginLeft: "0.5rem" }}
                       >
                         Reset
                       </button>
                       <button
-                        onClick={() =>
-                          handleReminderDelete(v._id, reminder.name)
-                        }
+                        onClick={() => handleReminderDelete(v._id, reminder.name)}
                         style={{ marginLeft: "0.5rem" }}
                       >
                         Delete
@@ -256,8 +236,8 @@ const VehicleManager: React.FC = () => {
                 <input
                   type="number"
                   name="mileage"
-                  placeholder="Miles"
-                  value={reminderInputs[v._id]?.mileage || 5000}
+                  placeholder="Enter number of miles"
+                  value={reminderInputs[v._id]?.mileage || ""}
                   onChange={(e) => handleReminderInput(v._id, e)}
                   required
                 />

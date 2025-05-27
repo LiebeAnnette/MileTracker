@@ -42,27 +42,34 @@ const resolvers = {
         context.user._id.toString()
       );
 
-      return alerts.map((vehicle: any) => {
+      return alerts.flatMap((vehicle: any) => {
         const totalMiles = vehicle.totalMiles || 0;
-        const threshold = vehicle.maintenanceReminderMiles || 0;
 
-        const formattedMiles = totalMiles.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
+        return vehicle.maintenanceReminders
+          .filter((reminder: any) => {
+            const lastReset = reminder.lastResetMileage || 0;
+            return totalMiles >= lastReset + reminder.mileage;
+          })
+          .map((reminder: any) => {
+            const formattedMiles = totalMiles.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
+            const threshold =
+              (reminder.lastResetMileage || 0) + reminder.mileage;
+            const formattedThreshold = threshold.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
 
-        const formattedThreshold = threshold.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
-
-        return {
-          vehicleId: vehicle._id.toString(),
-          vehicleName: vehicle.name,
-          totalMiles,
-          threshold,
-          alert: `${vehicle.name} has reached ${formattedMiles} miles and needs maintenance (limit: ${formattedThreshold}).`,
-        };
+            return {
+              vehicleId: vehicle._id.toString(),
+              vehicleName: vehicle.name,
+              totalMiles,
+              threshold,
+              alert: `${vehicle.name} is due for ${reminder.name} — ${formattedMiles} miles traveled (limit: ${formattedThreshold}).`,
+            };
+          });
       });
     },
 

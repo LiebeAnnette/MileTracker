@@ -10,31 +10,37 @@ import {
   DELETE_MAINTENANCE_REMINDER,
   ADD_MAINTENANCE_REMINDER,
 } from "../graphql/vehicleQueries";
+import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
 import "../../styles/vehicleManagerStyles.css";
 
 const VehicleManager: React.FC = () => {
   const { data, loading, error } = useQuery(GET_VEHICLES);
 
+  const sharedRefetch = [
+    { query: GET_VEHICLES },
+    { query: GET_ALERT_MESSAGES },
+  ];
+
   const [addVehicle] = useMutation(ADD_VEHICLE, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
   });
   const [deleteVehicle] = useMutation(DELETE_VEHICLE, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
   });
   const [updateVehicle] = useMutation(UPDATE_VEHICLE, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
   });
   const [addReminder] = useMutation(ADD_MAINTENANCE_REMINDER, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
   });
   const [updateReminder] = useMutation(UPDATE_MAINTENANCE_REMINDER, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
   });
   const [resetReminder] = useMutation(RESET_MAINTENANCE_REMINDER, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
   });
   const [deleteReminder] = useMutation(DELETE_MAINTENANCE_REMINDER, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
   });
 
   const [formState, setFormState] = useState({
@@ -130,7 +136,8 @@ const VehicleManager: React.FC = () => {
     mileage: number
   ) => {
     const newMileage = parseFloat(
-      prompt(`Update mileage for ${name}:`, mileage.toString()) || mileage.toString()
+      prompt(`Update mileage for ${name}:`, mileage.toString()) ||
+        mileage.toString()
     );
     if (!isNaN(newMileage)) {
       await updateReminder({
@@ -202,13 +209,17 @@ const VehicleManager: React.FC = () => {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleReminderReset(v._id, reminder.name)}
+                        onClick={() =>
+                          handleReminderReset(v._id, reminder.name)
+                        }
                         style={{ marginLeft: "0.5rem" }}
                       >
                         Reset
                       </button>
                       <button
-                        onClick={() => handleReminderDelete(v._id, reminder.name)}
+                        onClick={() =>
+                          handleReminderDelete(v._id, reminder.name)
+                        }
                         style={{ marginLeft: "0.5rem" }}
                       >
                         Delete

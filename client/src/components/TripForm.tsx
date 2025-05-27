@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { GET_VEHICLES } from "../graphql/vehicleQueries";
+import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
+import {
+  GET_TRIPS_BY_VEHICLE,
+  GET_ALL_TRIPS_FOR_FORM,
+} from "../graphql/tripQueries";
 
 const ADD_TRIP = gql`
   mutation AddTrip(
@@ -86,7 +91,7 @@ const getTodayDate = (): string => {
   return offsetDate.toISOString().split("T")[0];
 };
 
-const TripForm: React.FC = () => {
+const TripForm: React.FC<{ onTripAdded?: () => void }> = ({ onTripAdded }) => {
   const [formState, setFormState] = useState({
     startStreet: "",
     startCity: "",
@@ -105,7 +110,18 @@ const TripForm: React.FC = () => {
 
   const { data: vehicleData, loading: vehicleLoading } = useQuery(GET_VEHICLES);
   const [addTrip, { loading, error }] = useMutation(ADD_TRIP, {
-    refetchQueries: ["GetTrips"],
+    refetchQueries: [
+      { query: GET_VEHICLES },
+      { query: GET_ALERT_MESSAGES },
+      {
+        query: GET_TRIPS_BY_VEHICLE,
+        variables: { vehicleId: formState.vehicleId },
+      },
+      { query: GET_ALL_TRIPS_FOR_FORM },
+    ],
+    onCompleted: () => {
+      onTripAdded?.();
+    },
   });
 
   const handleChange = (
@@ -138,9 +154,8 @@ const TripForm: React.FC = () => {
       !endState ||
       !vehicleId ||
       !departureDate
-    ) {
+    )
       return;
-    }
 
     const startLocation = `${
       startStreet ? startStreet + ", " : ""
@@ -165,7 +180,7 @@ const TripForm: React.FC = () => {
         endCity: "",
         endState: "",
         vehicleId: "",
-        departureDate: "",
+        departureDate: getTodayDate(),
       });
     } catch (err) {
       console.error("Error adding trip:", err);

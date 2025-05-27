@@ -20,13 +20,26 @@ const typeDefs = gql`
     token: String!
     user: User!
   }
+
+  type MaintenanceReminder {
+    name: String!
+    mileage: Float!
+    lastResetMileage: Float
+  }
+
+  input MaintenanceReminderInput {
+    name: String!
+    mileage: Float!
+  }
+
   type Vehicle {
     _id: ID!
     name: String!
     make: String
     vehicleModel: String
-    maintenanceReminderMiles: Float!
+    maintenanceReminders: [MaintenanceReminder]
   }
+
   type MaintenanceAlert {
     vehicleId: ID!
     vehicleName: String!
@@ -45,27 +58,44 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    register(username: String!, password: String!): Auth
+    login(username: String!, password: String!): Auth
+
     addTrip(
       startLocation: String!
       endLocation: String!
       vehicleId: ID!
       departureDate: String!
     ): Trip
-    register(username: String!, password: String!): Auth
-    login(username: String!, password: String!): Auth
+
     deleteTrip(_id: ID!): Trip
+
     addVehicle(
       name: String!
       make: String
       vehicleModel: String
-      maintenanceReminderMiles: Float!
+      maintenanceReminders: [MaintenanceReminderInput]
     ): Vehicle
+
     deleteVehicle(_id: ID!): Vehicle
-    updateVehicle(
-      _id: ID!
-      name: String
-      maintenanceReminderMiles: Float
+
+    updateVehicle(_id: ID!, name: String): Vehicle
+
+    addMaintenanceReminder(
+      vehicleId: ID!
+      name: String!
+      mileage: Float!
     ): Vehicle
+
+    updateMaintenanceReminder(
+      vehicleId: ID!
+      name: String!
+      mileage: Float!
+    ): Vehicle
+
+    resetMaintenanceReminder(vehicleId: ID!, name: String!): Vehicle
+
+    deleteMaintenanceReminder(vehicleId: ID!, name: String!): Vehicle
   }
 `;
 

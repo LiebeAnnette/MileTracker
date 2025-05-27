@@ -34,6 +34,7 @@ const resolvers = {
       if (!context.user) throw new Error("Not authenticated");
       return await Vehicle.find({ user: context.user._id });
     },
+
     maintenanceAlerts: async (_: any, __: any, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
 
@@ -41,29 +42,37 @@ const resolvers = {
         context.user._id.toString()
       );
 
-      return alerts.map((vehicle: any) => {
+      return alerts.flatMap((vehicle: any) => {
         const totalMiles = vehicle.totalMiles || 0;
-        const threshold = vehicle.maintenanceReminderMiles;
 
-        const formattedMiles = totalMiles.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
+        return vehicle.maintenanceReminders
+          .filter((reminder: any) => {
+            const lastReset = reminder.lastResetMileage || 0;
+            return totalMiles >= lastReset + reminder.mileage;
+          })
+          .map((reminder: any) => {
+            const formattedMiles = totalMiles.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
+            const threshold =
+              (reminder.lastResetMileage || 0) + reminder.mileage;
+            const formattedThreshold = threshold.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
 
-        const formattedThreshold = threshold.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
-
-        return {
-          vehicleId: vehicle._id.toString(),
-          vehicleName: vehicle.name,
-          totalMiles,
-          threshold,
-          alert: `${vehicle.name} has reached ${formattedMiles} miles and needs maintenance (limit: ${formattedThreshold}).`,
-        };
+            return {
+              vehicleId: vehicle._id.toString(),
+              vehicleName: vehicle.name,
+              totalMiles,
+              threshold,
+              alert: `${vehicle.name} is due for ${reminder.name} — ${formattedMiles} miles traveled (limit: ${formattedThreshold}).`,
+            };
+          });
       });
     },
+
     getTripsByVehicle: async (_: any, { vehicleId }: any, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
       return await Trip.find({
@@ -108,8 +117,6 @@ const resolvers = {
       context: any
     ) => {
       if (!context.user) throw new Error("Not authenticated");
-      console.log("Start location:", startLocation);
-      console.log("End location:", endLocation);
 
       const miles = await calculateMiles(startLocation, endLocation);
       const weather = await getWeather(endLocation, departureDate);
@@ -143,7 +150,7 @@ const resolvers = {
 
     addVehicle: async (
       _: any,
-      { name, make, vehicleModel, maintenanceReminderMiles }: any,
+      { name, make, vehicleModel }: any,
       context: any
     ) => {
       if (!context.user) throw new Error("Not authenticated");
@@ -153,36 +160,28 @@ const resolvers = {
         name,
         make,
         vehicleModel,
-        maintenanceReminderMiles,
+        maintenanceReminders: [],
       });
     },
+
     deleteVehicle: async (_: any, { _id }: any, context: any) => {
-      if (!context.user) {
-        throw new Error("Not authenticated");
-      }
+      if (!context.user) throw new Error("Not authenticated");
 
       const deleted = await Vehicle.findOneAndDelete({
         _id,
         user: context.user._id,
       });
 
-      if (!deleted) {
-        throw new Error("Vehicle not found or unauthorized");
-      }
+      if (!deleted) throw new Error("Vehicle not found or unauthorized");
 
       return deleted;
     },
-    updateVehicle: async (
-      _: any,
-      { _id, name, maintenanceReminderMiles }: any,
-      context: any
-    ) => {
+
+    updateVehicle: async (_: any, { _id, name }: any, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
 
       const update: any = {};
       if (name !== undefined) update.name = name;
-      if (maintenanceReminderMiles !== undefined)
-        update.maintenanceReminderMiles = maintenanceReminderMiles;
 
       const updatedVehicle = await Vehicle.findOneAndUpdate(
         { _id, user: context.user._id },
@@ -192,6 +191,76 @@ const resolvers = {
 
       if (!updatedVehicle) throw new Error("Vehicle not found or unauthorized");
       return updatedVehicle;
+    },
+
+    addMaintenanceReminder: async (
+      _: any,
+      { vehicleId, name, mileage }: any,
+      context: any
+    ) => {
+      if (!context.user) throw new Error("Not authenticated");
+
+      return await Vehicle.findOneAndUpdate(
+        { _id: vehicleId, user: context.user._id },
+        { $push: { maintenanceReminders: { name, mileage } } },
+        { new: true }
+      );
+    },
+
+    updateMaintenanceReminder: async (
+      _: any,
+      { vehicleId, name, mileage }: any,
+      context: any
+    ) => {
+      if (!context.user) throw new Error("Not authenticated");
+
+      return await Vehicle.findOneAndUpdate(
+        {
+          _id: vehicleId,
+          user: context.user._id,
+          "maintenanceReminders.name": name,
+        },
+        { $set: { "maintenanceReminders.$.mileage": mileage } },
+        { new: true }
+      );
+    },
+
+    resetMaintenanceReminder: async (
+      _: any,
+      { vehicleId, name }: any,
+      context: any
+    ) => {
+      if (!context.user) throw new Error("Not authenticated");
+
+      const trips = await Trip.find({
+        user: context.user._id,
+        vehicle: vehicleId,
+      });
+      const totalMiles = trips.reduce((sum, t) => sum + t.miles, 0);
+
+      return await Vehicle.findOneAndUpdate(
+        {
+          _id: vehicleId,
+          user: context.user._id,
+          "maintenanceReminders.name": name,
+        },
+        { $set: { "maintenanceReminders.$.lastResetMileage": totalMiles } },
+        { new: true }
+      );
+    },
+
+    deleteMaintenanceReminder: async (
+      _: any,
+      { vehicleId, name }: any,
+      context: any
+    ) => {
+      if (!context.user) throw new Error("Not authenticated");
+
+      return await Vehicle.findOneAndUpdate(
+        { _id: vehicleId, user: context.user._id },
+        { $pull: { maintenanceReminders: { name } } },
+        { new: true }
+      );
     },
   },
 

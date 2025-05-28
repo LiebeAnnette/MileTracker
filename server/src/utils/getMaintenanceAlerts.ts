@@ -1,5 +1,5 @@
 import Trip from "../models/Trip";
-import Vehicle from "../models/Vehicle";
+import Vehicle, { IMaintenanceReminder, IVehicle } from "../models/Vehicle";
 
 export async function getVehiclesNeedingMaintenance(userId: string) {
   const vehicles = await Vehicle.find({ user: userId });
@@ -7,6 +7,7 @@ export async function getVehiclesNeedingMaintenance(userId: string) {
 
   const mileageByVehicle: Record<string, number> = {};
 
+  // Calculate total miles for each vehicle
   trips.forEach((trip) => {
     const vehicleId = trip.vehicle?.toString();
     if (vehicleId) {
@@ -15,17 +16,21 @@ export async function getVehiclesNeedingMaintenance(userId: string) {
     }
   });
 
+  // Return vehicles with at least one overdue maintenance reminder
   return vehicles
-    .map((vehicle) => {
-      const totalMiles =
-        mileageByVehicle[(vehicle._id as string).toString()] || 0;
+    .map((vehicleDoc) => {
+      const vehicle = vehicleDoc.toObject() as IVehicle & { _id: string };
+      const totalMiles = mileageByVehicle[vehicle._id.toString()] || 0;
 
       return {
-        ...vehicle.toObject(),
+        ...vehicle,
         totalMiles,
       };
     })
-    .filter(
-      (vehicle) => vehicle.totalMiles >= vehicle.maintenanceReminderMiles
+    .filter((vehicle) =>
+      vehicle.maintenanceReminders?.some((reminder: IMaintenanceReminder) => {
+        const lastReset = reminder.lastResetMileage || 0;
+        return vehicle.totalMiles >= lastReset + reminder.mileage;
+      })
     );
 }

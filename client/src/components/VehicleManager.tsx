@@ -5,37 +5,96 @@ import {
   ADD_VEHICLE,
   DELETE_VEHICLE,
   UPDATE_VEHICLE,
-} from "../graphql/vehicleQueries"; // You can split this if you prefer!
-import "../../styles/vehicleManagerStyles.css"
+  UPDATE_MAINTENANCE_REMINDER,
+  RESET_MAINTENANCE_REMINDER,
+  DELETE_MAINTENANCE_REMINDER,
+  ADD_MAINTENANCE_REMINDER,
+} from "../graphql/vehicleQueries";
+import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
+import "../../styles/vehicleManagerStyles.css";
 
 const VehicleManager: React.FC = () => {
   const { data, loading, error } = useQuery(GET_VEHICLES);
 
+  const sharedRefetch = [
+    { query: GET_VEHICLES },
+    { query: GET_ALERT_MESSAGES },
+  ];
+
   const [addVehicle] = useMutation(ADD_VEHICLE, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
   });
-
   const [deleteVehicle] = useMutation(DELETE_VEHICLE, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
   });
-
   const [updateVehicle] = useMutation(UPDATE_VEHICLE, {
-    refetchQueries: [{ query: GET_VEHICLES }],
+    refetchQueries: sharedRefetch,
+  });
+  const [addReminder] = useMutation(ADD_MAINTENANCE_REMINDER, {
+    refetchQueries: sharedRefetch,
+  });
+  const [updateReminder] = useMutation(UPDATE_MAINTENANCE_REMINDER, {
+    refetchQueries: sharedRefetch,
+  });
+  const [resetReminder] = useMutation(RESET_MAINTENANCE_REMINDER, {
+    refetchQueries: sharedRefetch,
+  });
+  const [deleteReminder] = useMutation(DELETE_MAINTENANCE_REMINDER, {
+    refetchQueries: sharedRefetch,
   });
 
   const [formState, setFormState] = useState({
     name: "",
     make: "",
     vehicleModel: "",
-    maintenanceReminderMiles: 5000,
   });
+
+  const [reminderInputs, setReminderInputs] = useState<
+    Record<string, { name: string; mileage: string }>
+  >({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormState((prev) => ({
       ...prev,
-      [name]: name === "maintenanceReminderMiles" ? parseFloat(value) : value,
+      [name]: value,
     }));
+  };
+
+  const handleReminderInput = (
+    vehicleId: string,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setReminderInputs((prev) => ({
+      ...prev,
+      [vehicleId]: {
+        ...prev[vehicleId],
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleAddReminder = async (e: React.FormEvent, vehicleId: string) => {
+    e.preventDefault();
+    const reminder = reminderInputs[vehicleId];
+    const parsedMileage = parseFloat(reminder?.mileage);
+    if (!reminder || !reminder.name || isNaN(parsedMileage)) return;
+    try {
+      await addReminder({
+        variables: {
+          vehicleId,
+          name: reminder.name,
+          mileage: parsedMileage,
+        },
+      });
+      setReminderInputs((prev) => ({
+        ...prev,
+        [vehicleId]: { name: "", mileage: "" },
+      }));
+    } catch (err) {
+      console.error("Failed to add reminder:", err);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,7 +105,6 @@ const VehicleManager: React.FC = () => {
         name: "",
         make: "",
         vehicleModel: "",
-        maintenanceReminderMiles: 5000,
       });
     } catch (err) {
       console.error("Failed to add vehicle:", err);
@@ -60,6 +118,7 @@ const VehicleManager: React.FC = () => {
       console.error("Failed to delete vehicle:", err);
     }
   };
+
   const handleUpdate = async (
     _id: string,
     updatedFields: { name?: string; maintenanceReminderMiles?: number }
@@ -71,10 +130,32 @@ const VehicleManager: React.FC = () => {
     }
   };
 
+  const handleReminderEdit = async (
+    vehicleId: string,
+    name: string,
+    mileage: number
+  ) => {
+    const newMileage = parseFloat(
+      prompt(`Update mileage for ${name}:`, mileage.toString()) ||
+        mileage.toString()
+    );
+    if (!isNaN(newMileage)) {
+      await updateReminder({
+        variables: { vehicleId, name, mileage: newMileage },
+      });
+    }
+  };
+
+  const handleReminderReset = async (vehicleId: string, name: string) => {
+    await resetReminder({ variables: { vehicleId, name } });
+  };
+
+  const handleReminderDelete = async (vehicleId: string, name: string) => {
+    await deleteReminder({ variables: { vehicleId, name } });
+  };
+
   return (
     <div className="addVehicle">
-      {/* <h2>Your Vehicles</h2> */}
-
       <form onSubmit={handleSubmit}>
         <button type="submit">Add Vehicle</button>
         <input
@@ -96,15 +177,6 @@ const VehicleManager: React.FC = () => {
           value={formState.vehicleModel}
           onChange={handleChange}
         />
-        <input
-          name="maintenanceReminderMiles"
-          type="number"
-          placeholder="Reminder Miles"
-          value={formState.maintenanceReminderMiles}
-          onChange={handleChange}
-          required
-        />
-        {/* <button type="submit">Add Vehicle</button> */}
       </form>
 
       {loading ? (
@@ -112,11 +184,76 @@ const VehicleManager: React.FC = () => {
       ) : error ? (
         <p>Error loading vehicles: {error.message}</p>
       ) : (
-        <div className = "vehicleGrid">
+        <div className="vehicleGrid">
           {data.vehicles.map((v: any) => (
-            <div key={v._id}>
-              {v.name} ({v.make} {v.vehicleModel}) — Reminder:{" "}
-              {v.maintenanceReminderMiles} miles{" "}
+            <div key={v._id} className="vehicle-card">
+              <strong>{v.name}</strong> ({v.make} {v.vehicleModel})<br />
+              <em>Maintenance Reminders:</em>
+              {v.maintenanceReminders?.length > 0 ? (
+                <ul>
+                  {v.maintenanceReminders.map((reminder: any, i: number) => (
+                    <li key={i}>
+                      {reminder.name}: {reminder.mileage.toLocaleString()} miles
+                      {reminder.lastResetMileage !== undefined &&
+                        ` (Last reset at ${reminder.lastResetMileage.toLocaleString()} mi)`}
+                      <button
+                        onClick={() =>
+                          handleReminderEdit(
+                            v._id,
+                            reminder.name,
+                            reminder.mileage
+                          )
+                        }
+                        style={{ marginLeft: "0.5rem" }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleReminderReset(v._id, reminder.name)
+                        }
+                        style={{ marginLeft: "0.5rem" }}
+                      >
+                        Reset
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleReminderDelete(v._id, reminder.name)
+                        }
+                        style={{ marginLeft: "0.5rem" }}
+                      >
+                        Delete
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p style={{ marginLeft: "1rem", color: "#777" }}>
+                  No reminders set.
+                </p>
+              )}
+              <form
+                onSubmit={(e) => handleAddReminder(e, v._id)}
+                style={{ marginTop: "0.5rem" }}
+              >
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Reminder Name"
+                  value={reminderInputs[v._id]?.name || ""}
+                  onChange={(e) => handleReminderInput(v._id, e)}
+                  required
+                />
+                <input
+                  type="number"
+                  name="mileage"
+                  placeholder="Enter number of miles"
+                  value={reminderInputs[v._id]?.mileage || ""}
+                  onChange={(e) => handleReminderInput(v._id, e)}
+                  required
+                />
+                <button type="submit">Add Reminder</button>
+              </form>
               <button
                 onClick={() =>
                   handleUpdate(v._id, {

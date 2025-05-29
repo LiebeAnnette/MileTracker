@@ -13,7 +13,7 @@ export const resolvers = {
     vehicle: async (parent: any) => {
       return await Vehicle.findById(parent.vehicle);
       },
-    },
+  },
   
   Query: {
     trips: async (_root: any, args: { vehicleId?: string }, context: any) => {
@@ -275,12 +275,6 @@ export const resolvers = {
         { new: true }
       );
     },
-  },
-
-  Trip: {
-    vehicle: async (parent: any) => {
-      return await Vehicle.findById(parent.vehicle);
-    },
 
     addExpenseFolder: async (
       _: any, 
@@ -289,7 +283,8 @@ export const resolvers = {
     ) => {
       if (!context.user) throw new AuthenticationError("Not authenticated");
     return await ExpenseFolder.create({ userId: context.user._id, title });
+    },
   },
-}};
+};
 
 export default resolvers;

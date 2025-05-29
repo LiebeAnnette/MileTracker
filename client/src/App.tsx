@@ -4,7 +4,7 @@ import TripForm from "./components/TripForm";
 import TripDashboard from "./components/TripDashboard";
 import TripPDFButton from "./components/TripPDFButton";
 import AuthForm from "./components/AuthForm";
- // import LogoutButton from "./components/LogoutButton";
+//import LogoutButton from "./components/LogoutButton";
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
 import VehicleManager from "./components/VehicleManager";
@@ -13,7 +13,6 @@ import ExpenseManager from "./components/ExpenseManager";
 import Footer from "./components/Footer";
 
 import Navbar from "./components/Navbar";
-import LogoutButton from "./components/LogoutButton";
 
 
 const App: React.FC = () => {
@@ -27,8 +26,6 @@ const App: React.FC = () => {
           <AuthForm />
         ) : (
           <>
-            <LogoutButton />
-
             <nav style={{ marginBottom: "1rem" }}>
               <Link to="/" style={{ marginRight: "1rem" }}>Home</Link>
               <Link to="/expenses">Trip Expenses</Link>

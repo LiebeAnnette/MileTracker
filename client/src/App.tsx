@@ -1,5 +1,6 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import {Routes} from "react-router";
 import TripForm from "./components/TripForm";
 import TripDashboard from "./components/TripDashboard";
 import TripPDFButton from "./components/TripPDFButton";

@@ -14,3 +14,13 @@ export const GET_EXPENSE_FOLDERS = gql`
       }
     }
 `;
+
+export const CREATE_EXPENSE_FOLDER = gql`
+  mutation CreateExpenseFolder($title: String!) {
+    createExpenseFolder(title: $title) {
+      _id
+      title
+      createdAt
+    }
+  }
+`;

@@ -21,7 +21,7 @@ const typeDefs = gql`
     user: User!
   }
   
-  type MaintenanceReminder {
+  type MaintenanceReminders {
     name: String!
     mileage: Float!
     lastResetMileage: Float
@@ -55,11 +55,26 @@ const typeDefs = gql`
     vehicles: [Vehicle]
     maintenanceAlerts: [MaintenanceAlert]
     getTripsByVehicle(vehicleId: ID!): [Trip]
+    getMyExpenseFolders: [ExpenseFolder]
+  }
+
+  type Expense {
+    category: String!
+    amount: Float!
+    description: String
+  }
+
+  type ExpenseFolder {
+    _id: ID!
+    title: String!
+    createdAt: String
+    expenses: [Expense]
   }
 
   type Mutation {
     register(username: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
+    addExpenseFolder(title: String!): ExpenseFolder
 
     addTrip(
       startLocation: String!

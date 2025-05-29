@@ -6,8 +6,15 @@ import { signToken } from "../utils/auth";
 import Vehicle from "../models/Vehicle";
 import { getVehiclesNeedingMaintenance } from "../utils/getMaintenanceAlerts";
 import ExpenseFolder from "../models/ExpenseFolder";
+import { AuthenticationError } from "apollo-server-express";
 
-const resolvers = {
+export const resolvers = {
+  Trip: {
+    vehicle: async (parent: any) => {
+      return await Vehicle.findById(parent.vehicle);
+      },
+    },
+  
   Query: {
     trips: async (_root: any, args: { vehicleId?: string }, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
@@ -83,7 +90,7 @@ const resolvers = {
     },
 
     getMyExpenseFolders: async (_root: any, _: any, context: any) => {
-      if (!context.user) throw new Error("Not authenticated");
+      if (!context.user) throw new AuthenticationError("Not authenticated");
       return await ExpenseFolder.find({ userId: context.user._id });
     },
   },
@@ -268,13 +275,15 @@ const resolvers = {
         { new: true }
       );
     },
-  },
 
-  Trip: {
-    vehicle: async (parent: any) => {
-      return await Vehicle.findById(parent.vehicle);
-    },
+    addExpenseFolder: async (
+      _: any, 
+      { title }: any, 
+      context: any
+    ) => {
+      if (!context.user) throw new AuthenticationError("Not authenticated");
+    return await ExpenseFolder.create({ userId: context.user._id, title });
   },
-};
+}};
 
 export default resolvers;

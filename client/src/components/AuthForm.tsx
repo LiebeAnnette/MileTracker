@@ -44,7 +44,7 @@ const AuthForm: React.FC = () => {
       });
       
       const data = isLogin ? result.data.login : result.data.register;
-      localStorage.setItem("username", data.use.username); // ✅ Save username!
+      localStorage.setItem("username", data.user.username); // ✅ Save username!
       localStorage.setItem("token", data.token); // (optional)
       setToken(data.token);
       

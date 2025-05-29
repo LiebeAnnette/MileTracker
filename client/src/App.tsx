@@ -8,6 +8,7 @@ import LogoutButton from "./components/LogoutButton";
 import VehicleManager from "./components/VehicleManager";
 import MaintenanceAlerts from "./components/MaintenanceAlerts";
 import ExpenseManager from "./components/ExpenseManager";
+import Footer from "./components/Footer";
 
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
@@ -47,6 +48,7 @@ const App: React.FC = () => {
             </Routes>
           </>
         )}
+        <Footer />
       </div>
     </Router>
   );

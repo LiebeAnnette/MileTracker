@@ -3,7 +3,7 @@ import { ApolloServer } from "apollo-server-express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import typeDefs from "./schemas/typeDefs";
-import resolvers from "./schemas/resolvers";
+import { resolvers } from "./schemas/resolvers";
 import { authMiddleware } from "./utils/auth";
 import cors from "cors";
 
@@ -14,6 +14,8 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: authMiddleware,
+  cache: "bounded", 
+  persistedQueries: false,
 });
 
 async function startServer() {

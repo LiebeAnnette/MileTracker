@@ -32,7 +32,7 @@ const vehicleSchema = new Schema<IVehicle>({
   },
   make: String,
   vehicleModel: String,
-  maintenanceReminders: [maintenanceReminderSchema],
+  maintenanceReminders: [maintenanceReminderSchema]
 });
 
 const Vehicle = model<IVehicle>("Vehicle", vehicleSchema);

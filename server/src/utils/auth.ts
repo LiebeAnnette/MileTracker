@@ -17,7 +17,7 @@ export function authMiddleware({ req }: any) {
   }
 
   if (!token) {
-    return req;
+    return { user: null };
   }
 
   try {
@@ -25,7 +25,8 @@ export function authMiddleware({ req }: any) {
     req.user = data;
   } catch {
     console.warn("Invalid token");
+    req.user = null;
   }
 
-  return req;
+  return { user: req.user };
 }

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { useAuth } from "../context/AuthContext";
-import "../AuthForm.css";
 
 const REGISTER = gql`
   mutation Register($username: String!, $password: String!) {
@@ -42,12 +41,12 @@ const AuthForm: React.FC = () => {
       const result = await mutation({
         variables: { username, password },
       });
-
+      
       const data = isLogin ? result.data.login : result.data.register;
       localStorage.setItem("username", data.user.username); // ✅ Save username!
       localStorage.setItem("token", data.token); // (optional)
       setToken(data.token);
-
+      
       setUsername("");
       setPassword("");
     } catch (error: any) {

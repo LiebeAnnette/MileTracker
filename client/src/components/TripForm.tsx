@@ -6,6 +6,10 @@ import {
   GET_TRIPS_BY_VEHICLE,
   GET_ALL_TRIPS_FOR_FORM,
 } from "../graphql/tripQueries";
+import Card from "./Card";
+import Button from "./Button";
+import { baseFieldStyles, selectFieldStyles } from "../../styles/styles";
+import confetti from "canvas-confetti";
 
 const ADD_TRIP = gql`
   mutation AddTrip(
@@ -171,6 +175,12 @@ const TripForm: React.FC<{ onTripAdded?: () => void }> = ({ onTripAdded }) => {
 
       const { miles, weather } = result.data.addTrip;
       setConfirmation({ miles, weather });
+      confetti({
+        particleCount: 200,
+        spread: 100,
+        angle: 90,
+        origin: { x: 0.5, y: 0.5 },
+      });
 
       setFormState({
         startStreet: "",
@@ -186,109 +196,151 @@ const TripForm: React.FC<{ onTripAdded?: () => void }> = ({ onTripAdded }) => {
       console.error("Error adding trip:", err);
     }
   };
+  let weatherDesc = "";
+  let weatherTemp = "";
+  let weatherEmoji = "";
+
+  if (confirmation?.weather) {
+    const parts = confirmation.weather.split(" ");
+    weatherDesc = parts[0];
+    weatherTemp = parts[1];
+    const temp = parseFloat(weatherTemp);
+    weatherEmoji = temp < 50 ? "❄️" : temp > 85 ? "🔥" : "🌤️";
+  }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <Card
+      title={<h1 className="heading-xl text-center text-black">Add Trip</h1>}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center space-y-4"
+      >
         {vehicleLoading ? (
           <p>Loading vehicles...</p>
         ) : (
-          <select
-            name="vehicleId"
-            value={formState.vehicleId}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select a vehicle</option>
-            {vehicleData?.vehicles.map((v: any) => (
-              <option key={v._id} value={v._id}>
-                {v.name}
-              </option>
-            ))}
-          </select>
+          <div className="w-full max-w-4xl flex justify-center">
+            <select
+              className={`${selectFieldStyles} w-1/2`}
+              name="vehicleId"
+              value={formState.vehicleId}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select a vehicle</option>
+              {vehicleData?.vehicles.map((v: any) => (
+                <option key={v._id} value={v._id}>
+                  {v.name}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
 
-        <h4>Start Location</h4>
-        <input
-          name="startStreet"
-          placeholder="Street (optional)"
-          value={formState.startStreet}
-          onChange={handleChange}
-        />
-        <input
-          name="startCity"
-          placeholder="City"
-          value={formState.startCity}
-          onChange={handleChange}
-          required
-        />
-        <select
-          name="startState"
-          value={formState.startState}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select State</option>
-          {US_STATES.map((abbr) => (
-            <option key={abbr} value={abbr}>
-              {abbr}
-            </option>
-          ))}
-        </select>
+        <div className="grid grid-cols-2 gap-4 w-full max-w-4xl">
+          <div>
+            <h4 className="heading-md text-black mb-2">Start Location</h4>
+            <input
+              className={baseFieldStyles}
+              name="startStreet"
+              placeholder="Street (optional)"
+              value={formState.startStreet}
+              onChange={handleChange}
+            />
+            <input
+              className={baseFieldStyles}
+              name="startCity"
+              placeholder="City"
+              value={formState.startCity}
+              onChange={handleChange}
+              required
+            />
+            <select
+              className={selectFieldStyles}
+              name="startState"
+              value={formState.startState}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select State</option>
+              {US_STATES.map((abbr) => (
+                <option key={abbr} value={abbr}>
+                  {abbr}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <h4>End Location</h4>
-        <input
-          name="endStreet"
-          placeholder="Street (optional)"
-          value={formState.endStreet}
-          onChange={handleChange}
-        />
-        <input
-          name="endCity"
-          placeholder="City"
-          value={formState.endCity}
-          onChange={handleChange}
-          required
-        />
-        <select
-          name="endState"
-          value={formState.endState}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select State</option>
-          {US_STATES.map((abbr) => (
-            <option key={abbr} value={abbr}>
-              {abbr}
-            </option>
-          ))}
-        </select>
+          <div>
+            <h4 className="heading-md text-black mb-2">End Location</h4>
+            <input
+              className={baseFieldStyles}
+              name="endStreet"
+              placeholder="Street (optional)"
+              value={formState.endStreet}
+              onChange={handleChange}
+            />
+            <input
+              className={baseFieldStyles}
+              name="endCity"
+              placeholder="City"
+              value={formState.endCity}
+              onChange={handleChange}
+              required
+            />
+            <select
+              className={selectFieldStyles}
+              name="endState"
+              value={formState.endState}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select State</option>
+              {US_STATES.map((abbr) => (
+                <option key={abbr} value={abbr}>
+                  {abbr}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="w-full max-w-4xl flex justify-center">
+          <input
+            className={`${baseFieldStyles} w-1/2`}
+            type="date"
+            name="departureDate"
+            value={formState.departureDate}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <h4>Departure Date</h4>
-        <input
-          type="date"
-          name="departureDate"
-          value={formState.departureDate}
-          onChange={handleChange}
-          required
-        />
-
-        <button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading}>
           {loading ? "Adding..." : "Add Trip"}
-        </button>
-        {error && <p>Error: {error.message}</p>}
+        </Button>
+
+        {error && <p className="text-red-600">Error: {error.message}</p>}
       </form>
 
       {confirmation && (
-        <div style={{ marginTop: "1rem" }}>
-          <p>
-            <strong>Trip added!</strong>
+        <div className="mt-6 p-4 rounded-md bg-white text-[color:var(--prussian)] shadow-md w-full max-w-4xl mx-auto">
+          <h3 className="heading-md text-[color:var(--teal)] mb-3 text-center">
+            Trip Added Successfully!
+          </h3>
+          <p className="body-text mb-1 text-center">
+            <strong>Miles:</strong>{" "}
+            {confirmation.miles.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </p>
-          <p>Miles: {confirmation.miles.toFixed(2)}</p>
-          <p>Weather at destination: {confirmation.weather}</p>
+          <p className="body-text text-center">
+            <strong>Weather at Destination:</strong> {weatherEmoji}{" "}
+            {weatherDesc} {weatherTemp}
+          </p>
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 

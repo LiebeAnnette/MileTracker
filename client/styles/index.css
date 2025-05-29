@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+:root {
+  --sky: #8ecae6ff;
+  --teal: #219ebcff;
+  --prussian: #023047ff;
+  --yellow: #ffb703ff;
+  --orange: #fb8500ff;
+  --pink: #ceb2ec;
+  
+  --font-heading: "Quicksand", sans-serif;
+  --font-body: "Nunito", sans-serif;
+  /* --font-heading: "Montserrat", sans-serif;
+  --font-body: "Roboto", sans-serif; */
+}
+body {
+  font-family: var(--font-body);
+}
+
+.heading-xl {
+  font-family: var(--font-heading);
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.heading-md {
+  font-family: var(--font-heading);
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.body-text {
+  font-family: var(--font-body);
+  font-size: 1rem;
+}

@@ -4,14 +4,17 @@ import TripForm from "./components/TripForm";
 import TripDashboard from "./components/TripDashboard";
 import TripPDFButton from "./components/TripPDFButton";
 import AuthForm from "./components/AuthForm";
-import LogoutButton from "./components/LogoutButton";
+ // import LogoutButton from "./components/LogoutButton";
+import { useAuth } from "./context/AuthContext";
+import "./App.css";
 import VehicleManager from "./components/VehicleManager";
 import MaintenanceAlerts from "./components/MaintenanceAlerts";
 import ExpenseManager from "./components/ExpenseManager";
 import Footer from "./components/Footer";
 
-import { useAuth } from "./context/AuthContext";
-import "./App.css";
+import Navbar from "./components/Navbar";
+import LogoutButton from "./components/LogoutButton";
+
 
 const App: React.FC = () => {
   const { token } = useAuth();
@@ -19,7 +22,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <div>
-        <h1>MileTracker</h1>
+        <Navbar />
         {!token ? (
           <AuthForm />
         ) : (
@@ -36,6 +39,7 @@ const App: React.FC = () => {
                 path="/"
                 element={
                   <div className="mainpage">
+                    {/* <LogoutButton /> */}
                     <TripPDFButton />
                     <VehicleManager />
                     <MaintenanceAlerts />

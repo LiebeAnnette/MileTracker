@@ -55,13 +55,13 @@ const TripPDFButton: React.FC = () => {
   const generatePDF = () => {
     const doc = new jsPDF();
     const now = new Date();
-    const localDateTime = now.toLocaleDateString(undefined, {
+    const localDateTime = now.toLocaleString(undefined, {
       dateStyle: "medium",
       timeStyle: "short",
     });
 
     if (selectedVehicleId === "") {
-      const grouped: Record<string, { trips: any[]; totalMiles: number}> = {};
+      const grouped: Record<string, { trips: any[]; totalMiles: number }> = {};
       let totalMilesAll = 0;
 
       trips.forEach((trip: any) => {
@@ -100,7 +100,7 @@ const TripPDFButton: React.FC = () => {
         ([vehicleName, { trips, totalMiles }]) => {
           doc.setFontSize(11);
           doc.text(
-            `${vehicleName} - Trips: ${
+            `${vehicleName} — Trips: ${
               trips.length
             }, Miles: ${totalMiles.toLocaleString(undefined, {
               minimumFractionDigits: 2,

@@ -20,8 +20,8 @@ const typeDefs = gql`
     token: String!
     user: User!
   }
-  
-  type MaintenanceReminders {
+
+  type MaintenanceReminder {
     name: String!
     mileage: Float!
     lastResetMileage: Float
@@ -37,7 +37,7 @@ const typeDefs = gql`
     name: String!
     make: String
     vehicleModel: String
-    maintenanceReminders: [MaintenanceReminders]
+    maintenanceReminders: [MaintenanceReminder]
   }
 
   type MaintenanceAlert {
@@ -82,18 +82,18 @@ const typeDefs = gql`
       vehicleId: ID!
       departureDate: String!
     ): Trip
-    
+
     deleteTrip(_id: ID!): Trip
 
     addVehicle(
       name: String!
       make: String
       vehicleModel: String
-      maintenanceReminderMiles: [MaintenanceReminderInput]
+      maintenanceReminders: [MaintenanceReminderInput]
     ): Vehicle
 
     deleteVehicle(_id: ID!): Vehicle
-    
+
     updateVehicle(_id: ID!, name: String): Vehicle
 
     addMaintenanceReminder(

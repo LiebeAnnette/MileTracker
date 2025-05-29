@@ -52,7 +52,7 @@ export const resolvers = {
 
       return alerts.flatMap((vehicle: any) => {
         const totalMiles = vehicle.totalMiles || 0;
-        
+
         return vehicle.maintenanceReminders
           .filter((reminder: any) => {
             const lastReset = reminder.lastResetMileage || 0;
@@ -178,7 +178,7 @@ export const resolvers = {
     },
 
     deleteVehicle: async (_: any, { _id }: any, context: any) => {
-      if (!context.user) throw new Error("Not Authenticated");
+      if (!context.user) throw new Error("Not authenticated");
 
       const deleted = await Vehicle.findOneAndDelete({
         _id,
@@ -274,6 +274,12 @@ export const resolvers = {
         { $pull: { maintenanceReminders: { name } } },
         { new: true }
       );
+    },
+  },
+
+  Trip: {
+    vehicle: async (parent: any) => {
+      return await Vehicle.findById(parent.vehicle);
     },
 
     addExpenseFolder: async (

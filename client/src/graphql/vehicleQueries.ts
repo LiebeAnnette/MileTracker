@@ -26,7 +26,7 @@ export const ADD_VEHICLE = gql`
       maintenanceReminders {
         name
         mileage
-        lastResetmileage
+        lastResetMileage
       }
     }
   }

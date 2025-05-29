@@ -114,4 +114,4 @@ Improve PDF layout and appearance yourname/pdf-beautification
 
 👏 Credits
 
-Developed by Liebe &? as the final capstone project for a full-stack JavaScript bootcamp. Built with ❤️, APIs, and very little sleep.
+Developed by Liebe, Colton, Maddie and Stephen as the final capstone project for a full-stack JavaScript bootcamp. Built with ❤️, APIs, and very little sleep.

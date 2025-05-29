@@ -1,5 +1,5 @@
 import React from "react";
-import { FaGithub } from "react-icons/fa";
+// import { FaGithub } from "react-icons/fa";
 
 const Footer: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
             rel="noopener noreferrer"
             className="footer-link"
           >
-            <FaGithub size={24} />
+            {/* <FaGithub size={24} /> */}
           </a>
         </p>
       </div>

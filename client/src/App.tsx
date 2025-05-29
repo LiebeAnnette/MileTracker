@@ -9,7 +9,9 @@ import "./App.css";
 import VehicleManager from "./components/VehicleManager";
 import MaintenanceAlerts from "./components/MaintenanceAlerts";
 import Footer from "./components/Footer";
+
 import Navbar from "./components/Navbar";
+
 
 const App: React.FC = () => {
   const { token } = useAuth();

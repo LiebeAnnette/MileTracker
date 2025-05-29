@@ -1,7 +1,6 @@
 import React from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { useAuth } from "../context/AuthContext"; // import the auth context
-import "../TripDashboard.css";
 import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
 
 const GET_TRIPS = gql`

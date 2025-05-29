@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { useAuth } from "../context/AuthContext";
-import "../AuthForm.css";
 
 const REGISTER = gql`
   mutation Register($username: String!, $password: String!) {

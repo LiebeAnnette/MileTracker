@@ -11,7 +11,6 @@ import {
   ADD_MAINTENANCE_REMINDER,
 } from "../graphql/vehicleQueries";
 import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
-import "../../styles/vehicleManagerStyles.css";
 
 const VehicleManager: React.FC = () => {
   const { data, loading, error } = useQuery(GET_VEHICLES);

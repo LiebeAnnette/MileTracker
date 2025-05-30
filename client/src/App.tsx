@@ -23,7 +23,9 @@ const App: React.FC = () => {
 
   return (
     <Router>
+     <div className="mainpage">
       <Navbar />
+      <div className="flex-1">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/trips" element={<TripDashboard />} />
@@ -33,7 +35,9 @@ const App: React.FC = () => {
         <Route path="/pdf" element={<TripPDFButton />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      </div>
       <Footer />
+      </div>
     </Router>
   );
 

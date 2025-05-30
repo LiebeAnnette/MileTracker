@@ -45,5 +45,7 @@ html, body, #root {
 }
 
 .mainpage {
+  display: flex;
+  flex-direction: column;
   flex: 1;
 }

@@ -25,3 +25,13 @@
 //   },
 //   plugins: [],
 // };
+// tailwind.config.js
+// module.exports = {
+//   theme: {
+//     extend: {
+//       animation: {
+//         'pulse-slow': 'pulse 2.5s ease-in-out infinite',
+//       },
+//     },
+//   },
+// };

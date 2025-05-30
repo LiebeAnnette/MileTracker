@@ -8,7 +8,7 @@
   --orange: #fb8500ff;
   --pink: #ceb2ec;
   --off-white: #f8f8f9;
-  
+
   --font-heading: "Quicksand", sans-serif;
   --font-body: "Nunito", sans-serif;
   /* --font-heading: "Montserrat", sans-serif;
@@ -38,7 +38,9 @@ body {
   font-size: 1rem;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   display: flex;
@@ -49,4 +51,23 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   flex: 1;
+}
+@keyframes colorPulse {
+  0% {
+    color: var(--orange);
+  }
+  33% {
+    color: var(--pink);
+  }
+  66% {
+    color: var(--yellow);
+  }
+  100% {
+    color: var(--orange);
+  }
+}
+
+.animate-color-pulse {
+  animation: colorPulse 3s ease-in-out infinite;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25); /* ✨ subtle shadow */
 }

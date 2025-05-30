@@ -3,6 +3,9 @@ import { useQuery, gql } from "@apollo/client";
 import jsPDF from "jspdf";
 import { GET_VEHICLES } from "../graphql/vehicleQueries";
 import { GET_TRIPS_BY_VEHICLE } from "../graphql/tripQueries";
+import Card from "./Card";
+import Button from "./Button";
+import { selectFieldStyles } from "../../styles/styles";
 
 const GET_ALL_TRIPS = gql`
   query GetAllTrips {
@@ -207,34 +210,40 @@ const TripPDFButton: React.FC = () => {
   };
 
   return (
-    <div>
-      <h3>Export Trips by Vehicle</h3>
-      {loadingVehicles ? (
-        <p>Loading vehicles...</p>
-      ) : (
-        <select
-          value={selectedVehicleId}
-          onChange={(e) => setSelectedVehicleId(e.target.value)}
-        >
-          <option value="">All Vehicles</option>
-          {vehicleData?.vehicles.map((v: any) => (
-            <option key={v._id} value={v._id}>
-              {v.name} ({v.make} {v.vehicleModel})
-            </option>
-          ))}
-        </select>
-      )}
+    <Card
+      title={
+        <div className="heading-xl text-center text-black">
+          Export Trips by Vehicle
+        </div>
+      }
+    >
+      <div className="flex flex-col items-center space-y-4">
+        {loadingVehicles ? (
+          <p>Loading vehicles...</p>
+        ) : (
+          <select
+            value={selectedVehicleId}
+            onChange={(e) => setSelectedVehicleId(e.target.value)}
+            className={`${selectFieldStyles} w-full max-w-md`}
+          >
+            <option value="">All Vehicles</option>
+            {vehicleData?.vehicles.map((v: any) => (
+              <option key={v._id} value={v._id}>
+                {v.name} ({v.make} {v.vehicleModel})
+              </option>
+            ))}
+          </select>
+        )}
 
-      {loading ? (
-        <p>Loading trips...</p>
-      ) : error ? (
-        <p>Error loading trips.</p>
-      ) : (
-        <button onClick={generatePDF} style={{ marginTop: "1rem" }}>
-          Download Trip PDF
-        </button>
-      )}
-    </div>
+        {loading ? (
+          <p>Loading trips...</p>
+        ) : error ? (
+          <p className="text-red-600">Error loading trips.</p>
+        ) : (
+          <Button onClick={generatePDF}>Download Trip PDF</Button>
+        )}
+      </div>
+    </Card>
   );
 };
 

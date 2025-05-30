@@ -4,7 +4,6 @@ import { useAuth } from "../context/AuthContext"; // import the auth context
 import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
 import Card from "./Card";
 import Button from "./Button";
-import { baseFieldStyles, selectFieldStyles } from "../../styles/styles";
 
 const GET_TRIPS = gql`
   query GetTrips {

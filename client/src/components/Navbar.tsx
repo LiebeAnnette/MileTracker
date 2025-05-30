@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from '../context/AuthContext';
+import "../../styles/navbar.css";
 
 const Navbar: React.FC = () => {
     const { token, setToken } = useAuth();

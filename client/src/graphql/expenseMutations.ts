@@ -10,16 +10,16 @@ export const ADD_EXPENSE_FOLDER = gql`
     }
 `;
 
-export const ADD_EXPENSE = gql `
-    mutation AddExpenseToFolder($folderID: ID!, $expense: ExpenseInput!) {
-        addExpenseToFolder(folderID: $folderId, expense: $expense) {
+export const ADD_EXPENSE = gql`
+    mutation AddExpenseToFolder($folderId: ID!, $expense: ExpenseInput!) {
+        addExpenseToFolder(folderId: $folderId, expense: $expense) {
             _id
             title
-            expense {
+            createdAt
+            expenses {
                 category
                 amount
                 description
-                }
             }
         }
     }

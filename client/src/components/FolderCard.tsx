@@ -33,6 +33,7 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
     });
 
     const handleAddExpense = async (expense: Expense) => {
+        console.log("Debug expense input:", expense);
         await addExpense({
             variables: {
                 folderId: folder._id,

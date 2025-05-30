@@ -1,0 +1,32 @@
+.footer {
+    background-color: var(--prussian);
+    color: white;
+    font-family: var(--font-body);
+    padding: 1rem 0;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  .footer-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .footer-link {
+    color: var(--sky);
+    margin-left: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-link:hover {
+    color: var(--yellow);
+  }
+  

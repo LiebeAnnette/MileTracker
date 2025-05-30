@@ -1,0 +1,34 @@
+.road-container {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(to top, #a0a0a0 0%, #d0d0d0 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 1rem;
+}
+
+.vehicle-parade {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.vehicle {
+  font-size: 3.5rem;
+  position: absolute;
+  bottom: 0;
+  left: -120px;
+  animation: driveLoop 12s linear infinite;
+  transform: scaleX(-1); /* Default flip — will be merged inside keyframes */
+}
+
+@keyframes driveLoop {
+  0% {
+    transform: translateX(-120px) scaleX(-1);
+  }
+  100% {
+    transform: translateX(110vw) scaleX(-1);
+  }
+}

@@ -94,10 +94,6 @@ const TripDashboard: React.FC = () => {
         )}
 
         <div className="w-full space-y-6">
-          {/* <h2 className="heading-lg text-center text-[color:var(--prussian)]">
-            All Trips
-          </h2> */}
-
           <div className="flex justify-center mb-4">
             <div className="w-full max-w-md flex items-center justify-center space-x-2">
               <label className="text-[color:var(--prussian)] mr-2 font-semibold">
@@ -131,71 +127,121 @@ const TripDashboard: React.FC = () => {
                   1;
               }
 
+              const tripDetails = [
+                {
+                  label: "Vehicle",
+                  content: (
+                    <div className="text-center space-y-1">
+                      <div className="font-semibold text-[color:var(--prussian)]">
+                        Vehicle: {trip.vehicle?.name ?? "N/A"}{" "}
+                        {trip.vehicle?.make && (
+                          <span className="text-gray-500 text-sm">
+                            ({trip.vehicle.make})
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Trip {tripNumber}
+                      </div>
+                    </div>
+                  ),
+                },
+
+                {
+                  label: "Date",
+                  content: (
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-[color:var(--prussian)]">
+                        Date:
+                      </span>
+                      <span>{new Date(trip.date).toLocaleDateString()}</span>
+                    </div>
+                  ),
+                },
+                {
+                  label: "From",
+                  content: (
+                    <div>
+                      <div className="flex justify-between">
+                        <span className="font-semibold text-[color:var(--prussian)]">
+                          From:
+                        </span>
+                        <span>{trip.startLocation?.split(",")[0]}</span>
+                      </div>
+                      <div className="text-right text-gray-600 text-sm">
+                        {trip.startLocation?.split(",").slice(1).join(",")}
+                      </div>
+                    </div>
+                  ),
+                },
+                {
+                  label: "To",
+                  content: (
+                    <div>
+                      <div className="flex justify-between">
+                        <span className="font-semibold text-[color:var(--prussian)]">
+                          To:
+                        </span>
+                        <span>{trip.endLocation?.split(",")[0]}</span>
+                      </div>
+                      <div className="text-right text-gray-600 text-sm">
+                        {trip.endLocation?.split(",").slice(1).join(",")}
+                      </div>
+                    </div>
+                  ),
+                },
+                {
+                  label: "Miles",
+                  content: (
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-[color:var(--prussian)]">
+                        Miles:
+                      </span>
+                      <span>
+                        {trip.miles.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        miles
+                      </span>
+                    </div>
+                  ),
+                },
+                {
+                  label: "Weather",
+                  content: (
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-[color:var(--prussian)]">
+                        Weather:
+                      </span>
+                      <span>{trip.weather}</span>
+                    </div>
+                  ),
+                },
+              ];
+
               return (
                 <li
                   key={trip._id}
                   className="bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-xl p-3 shadow-sm text-base space-y-3"
                 >
-                  {[
-                    {
-                      label: "Vehicle",
-                      content: (
-                        <>
-                          Trip {tripNumber}: {trip.vehicle?.name ?? "N/A"}{" "}
-                          {trip.vehicle?.make && (
-                            <span className="text-gray-500 text-sm">
-                              ({trip.vehicle.make})
-                            </span>
-                          )}
-                        </>
-                      ),
-                    },
-                    {
-                      label: "Date",
-                      content: new Date(trip.date).toLocaleDateString(),
-                    },
-                    {
-                      label: "From",
-                      content: (
-                        <>
-                          {trip.startLocation?.split(",")[0]}
-                          <div className="text-gray-600 text-sm">
-                            {trip.startLocation?.split(",").slice(1).join(",")}
-                          </div>
-                        </>
-                      ),
-                    },
-                    {
-                      label: "To",
-                      content: (
-                        <>
-                          {trip.endLocation?.split(",")[0]}
-                          <div className="text-gray-600 text-sm">
-                            {trip.endLocation?.split(",").slice(1).join(",")}
-                          </div>
-                        </>
-                      ),
-                    },
-                    {
-                      label: "Miles",
-                      content: `${trip.miles.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })} miles`,
-                    },
-                    {
-                      label: "Weather",
-                      content: trip.weather,
-                    },
-                  ].map(({ label, content }) => (
+                  {tripDetails.map(({ label, content }) => (
                     <div
                       key={label}
                       className="bg-[color:var(--off-white)] bg-opacity-90 border-2 border-[color:var(--pink)] p-2 rounded-lg space-y-1"
                     >
-                      <h4 className="font-semibold text-[color:var(--prussian)]">
-                        {label}
-                      </h4>
-                      <div className="text-black">{content}</div>
+                      {["Date", "Miles", "Weather", "From", "To", "Vehicle"].includes(
+                        label
+                      ) ? (
+                        <div className="text-black">{content}</div>
+                      ) : (
+                        <>
+                          <h4 className="font-semibold text-[color:var(--prussian)]">
+                            {label}
+                          </h4>
+                          <div className="text-black">{content}</div>
+                        </>
+                      )}
                     </div>
                   ))}
 

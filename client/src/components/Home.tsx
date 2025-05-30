@@ -19,10 +19,10 @@ const Home: React.FC = () => {
           Your personal vehicle trip and mileage manager.
           <br />
           <span
-            className="font-semibold animate-color-pulse"
-            style={{ fontFamily: "var(--font-body)" }}
+            className="mt-4 block text-xl sm:text-2xl font-bold text-[color:var(--orange)] animate-color-pulse"
+            style={{ fontFamily: "var(--font-heading)" }}
           >
-            Select a tab to get started.
+            Ready to roll?<br />Click a tab in the top nav to begin!
           </span>
         </p>
       </div>

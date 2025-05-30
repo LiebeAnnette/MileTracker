@@ -12,32 +12,31 @@ const Navbar: React.FC = () => {
 
   return (
     <nav>
-  <div className="nav-header">
-    <img
-      src="/MileTrackerLogo-favicon.png"
-      alt="MileTracker Logo"
-      className="logo-icon"
-    />
-    <h2 className="nav-title">MileTracker</h2>
-  </div>
-
-  {token && (
-    <>
-      <div className="nav-links">
-        <Link to="/dashboard">Dashboard</Link>
-        <Link to="/vehicles">Vehicles</Link>
-        <Link to="/trips">Trips</Link>
-        <Link to="/add-trip">Add Trip</Link>
-        <Link to="/alerts">Alerts</Link>
-        <Link to="/pdf">Generate PDF</Link>
+      <div className="nav-header">
+        <img
+          src="/MileTrackerLogo-favicon.png"
+          alt="MileTracker Logo"
+          className="logo-icon"
+        />
+        <h2 className="nav-title">MileTracker</h2>
       </div>
-      <div className="logout-container">
-        <button onClick={handleLogout}>Logout</button>
-      </div>
-    </>
-  )}
-</nav>
 
+      {token && (
+        <>
+          <div className="nav-links">
+            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/vehicles">Vehicles</Link>
+            <Link to="/add-trip">Add Trip</Link>
+            <Link to="/trips">Your Trips</Link>
+            <Link to="/alerts">Service Alerts</Link>
+            <Link to="/pdf">Generate PDF</Link>
+          </div>
+          <div className="logout-container">
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        </>
+      )}
+    </nav>
   );
 
   // return (

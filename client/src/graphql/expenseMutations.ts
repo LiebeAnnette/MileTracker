@@ -11,25 +11,16 @@ export const ADD_EXPENSE_FOLDER = gql`
 `;
 
 export const ADD_EXPENSE = gql `
-    mutation AddExpense(
-        $folderID: ID!
-        $category: String!
-        $amount: Float!
-        $description: String
-    ) {
-        addExpense(
-            folderID: $folderID
-            category: $category
-            amount: $amount
-            description: $description
-        ) {
-        _id
-        title
-        expense {
-            category
-            description
-            amount
+    mutation AddExpenseToFolder($folderID: ID!, $expense: ExpenseInput!) {
+        addExpenseToFolder(folderID: $folderId, expense: $expense) {
+            _id
+            title
+            expense {
+                category
+                amount
+                description
+                }
+            }
         }
-      }
     }
 `;

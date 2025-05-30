@@ -1,56 +1,50 @@
 import React, { useState } from "react";
-import { useMutation } from "@apollo/client";
-import { ADD_EXPENSE } from "../graphql/expenseMutations";
-import { GET_EXPENSE_FOLDERS } from "../graphql/expenseQueries";
 
-interface ExpenseFormProps {
-    folderId: string;
+interface ExpenseInput {
+    category: string;
+    amount: number;
+    description?: string;
 }
 
-const ExpenseForm: React.FC<ExpenseFormProps> = ({ folderId }) => {
-    const [category, setCategory] = useState("Airfare");
-    const [amount, setAmount] = useState("");
-    const [description, setDescription] = useState("");
+interface ExpenseFormProps {
+    onAdd: (expense: ExpenseInput) => void;
+}
 
-    const [addExpense, {loading, error}] = useMutation(ADD_EXPENSE, {
-        refetchQueries: [{ query: GET_EXPENSE_FOLDERS }],
+const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAdd }) => {
+    const [formState, setFormState] = useState<ExpenseInput>({
+        category: "",
+        amount: 0,
+        description: "",
     });
 
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target;
+        setFormState((prev) => ({
+            ...prev,
+            [name]: name === "amount" ? parseFloat(value) : value,
+        }));
+    };
+    
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        const parsedAmount = parseFloat(amount);
-        if (isNaN(parsedAmount) || parsedAmount <= 0) {
-            alert("Please enter a valid amount.");
-            return;
-        }
-
-        try { 
-            await addExpense({
-                variables: {
-                    folderId,
-                    category,
-                    amount: parsedAmount,
-                    description: description || null,
-                },
-            });
-
-            // Reset form
-            setCategory("Airfare");
-            setAmount("");
-            setDescription("");
-          } catch (err) {
-            console.error("Failed to add expense:", err);
-          }
-        };
+        if (!formState.category || formState.amount <= 0) return;
+        onAdd(formState);
+        setFormState({ category: "", amount: 0, description: "" });
+    };
 
     return (
         <form onSubmit={handleSubmit}>
-            <h4>Add Expense</h4>
-
-            <select value={category} onChange={(e) => setCategory(e.target.value)} required>
-                <option value="Airfare">Airfare</option>
+            <select 
+                name="category"
+                value={formState.category}
+                onChange={handleChange}
+                required
+            >
+                <option value="">Select Category</option>
                 <option value="Food">Food</option>
+                <option value="Airfare">Airfare</option>
                 <option value="Hotel">Hotel</option>
                 <option value="Vehicle">Vehicle</option>
                 <option value="Miscellaneous">Miscellaneous</option>
@@ -58,24 +52,22 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ folderId }) => {
 
             <input
                 type="number"
+                name="amount"
                 placeholder="Amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                value={formState.amount || ""}
+                onChange={handleChange}
                 required
             />
 
             <input
                 type="text"
+                name="description"
                 placeholder="Description (optional)"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={formState.description}
+                onChange={handleChange}
             />
 
-            <button type="submit" disabled={loading}>
-                {loading ? "Adding..." : "Add Expense"}
-            </button>
-
-            {error && <p style={{ color: "red" }}>Error: {error.message}</p>}
+            <button type="submit">Add Expense</button>
         </form>
     );
 };

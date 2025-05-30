@@ -282,8 +282,25 @@ export const resolvers = {
       context: any
     ) => {
       if (!context.user) throw new AuthenticationError("Not authenticated");
-    return await ExpenseFolder.create({ userId: context.user._id, title });
+      return await ExpenseFolder.create({ userId: context.user._id, title });
     },
+
+    addExpenseToFolder: async (_: any, { folderId, expense }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("Not authenticated");
+
+      const updated = await ExpenseFolder.findOneAndUpdate(
+        { _id: folderId, userId: context.user._id },
+        { $push: { expenses: expense } },
+        { new: true }
+      );
+
+      if (!updated) {
+        throw new Error("Expense folder not found or unauthorized");
+      }
+
+      return updated;
+    },
+
   },
 };
 

@@ -32,6 +32,12 @@ const typeDefs = gql`
     mileage: Float!
   }
 
+  input ExpenseInput {
+    category: String!
+    amount: Float!
+    description: String
+  }
+
   type Vehicle {
     _id: ID!
     name: String!
@@ -75,6 +81,7 @@ const typeDefs = gql`
     register(username: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
     addExpenseFolder(title: String!): ExpenseFolder
+    addExpenseToFolder(folderId: ID!, expense: ExpenseInput!): ExpenseFolder
 
     addTrip(
       startLocation: String!

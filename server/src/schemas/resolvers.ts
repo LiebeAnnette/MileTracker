@@ -4,7 +4,6 @@ import { calculateMiles } from "../utils/calculateMiles";
 import { getWeather } from "../utils/getWeather";
 import { signToken } from "../utils/auth";
 import Vehicle from "../models/Vehicle";
-import { getVehiclesNeedingMaintenance } from "../utils/getMaintenanceAlerts";
 import ExpenseFolder from "../models/ExpenseFolder";
 import { AuthenticationError } from "apollo-server-express";
 
@@ -12,9 +11,9 @@ export const resolvers = {
   Trip: {
     vehicle: async (parent: any) => {
       return await Vehicle.findById(parent.vehicle);
-      },
+    },
   },
-  
+
   Query: {
     trips: async (_root: any, args: { vehicleId?: string }, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
@@ -46,38 +45,46 @@ export const resolvers = {
     maintenanceAlerts: async (_: any, __: any, context: any) => {
       if (!context.user) throw new Error("Not authenticated");
 
-      const alerts = await getVehiclesNeedingMaintenance(
-        context.user._id.toString()
-      );
+      const vehicles = await Vehicle.find({ user: context.user._id });
+      const trips = await Trip.find({ user: context.user._id });
 
-      return alerts.flatMap((vehicle: any) => {
-        const totalMiles = vehicle.totalMiles || 0;
+      return vehicles.flatMap((vehicle: any) => {
+        const vehicleTrips = trips.filter(
+          (trip: any) => trip.vehicle?.toString() === vehicle._id.toString()
+        );
+        const totalVehicleMiles = vehicleTrips.reduce(
+          (sum, t) => sum + t.miles,
+          0
+        );
 
         return vehicle.maintenanceReminders
-          .filter((reminder: any) => {
-            const lastReset = reminder.lastResetMileage || 0;
-            return totalMiles >= lastReset + reminder.mileage;
-          })
           .map((reminder: any) => {
-            const formattedMiles = totalMiles.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            });
-            const threshold =
-              (reminder.lastResetMileage || 0) + reminder.mileage;
-            const formattedThreshold = threshold.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            });
+            const lastReset = reminder.lastResetMileage || 0;
+            const milesSinceReset = totalVehicleMiles - lastReset;
+            const isOverdue = milesSinceReset >= reminder.mileage;
 
-            return {
-              vehicleId: vehicle._id.toString(),
-              vehicleName: vehicle.name,
-              totalMiles,
-              threshold,
-              alert: `${vehicle.name} is due for ${reminder.name} — ${formattedMiles} miles traveled (limit: ${formattedThreshold}).`,
-            };
-          });
+            return isOverdue
+              ? {
+                  vehicleId: vehicle._id.toString(),
+                  vehicleName: vehicle.name,
+                  totalMiles: milesSinceReset,
+                  threshold: reminder.mileage,
+                  alert: `${vehicle.name} is due for ${
+                    reminder.name
+                  } — ${milesSinceReset.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })} miles traveled (limit: ${reminder.mileage.toLocaleString(
+                    undefined,
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}).`,
+                }
+              : null;
+          })
+          .filter(Boolean);
       });
     },
 
@@ -276,13 +283,9 @@ export const resolvers = {
       );
     },
 
-    addExpenseFolder: async (
-      _: any, 
-      { title }: any, 
-      context: any
-    ) => {
+    addExpenseFolder: async (_: any, { title }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("Not authenticated");
-    return await ExpenseFolder.create({ userId: context.user._id, title });
+      return await ExpenseFolder.create({ userId: context.user._id, title });
     },
   },
 };

@@ -14,6 +14,9 @@ import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
 import Card from "./Card";
 import Button from "./Button";
 import { baseFieldStyles } from "../../styles/styles";
+import confetti from "canvas-confetti";
+import MaintenanceAlerts from "./MaintenanceAlerts";
+
 
 const VehicleManager: React.FC = () => {
   const { data, loading, error } = useQuery(GET_VEHICLES);
@@ -54,6 +57,8 @@ const VehicleManager: React.FC = () => {
   const [reminderInputs, setReminderInputs] = useState<
     Record<string, { name: string; mileage: string }>
   >({});
+
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -103,11 +108,26 @@ const VehicleManager: React.FC = () => {
     e.preventDefault();
     try {
       await addVehicle({ variables: formState });
+
+      // 🎉 Confetti
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+      });
+
+      // ✅ Set success message
+      setSuccessMessage("Vehicle added successfully!");
+
+      // Clear form
       setFormState({
         name: "",
         make: "",
         vehicleModel: "",
       });
+
+      // ⏳ Clear message after a few seconds
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
       console.error("Failed to add vehicle:", err);
     }
@@ -163,6 +183,7 @@ const VehicleManager: React.FC = () => {
       }
     >
       <div className="flex flex-col items-center space-y-6">
+        <MaintenanceAlerts />
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-3xl flex flex-col items-center bg-white p-6 rounded-xl shadow-md border border-gray-200 space-y-6"
@@ -199,6 +220,11 @@ const VehicleManager: React.FC = () => {
           <Button type="submit" className="self-center">
             Add Vehicle
           </Button>
+          {successMessage && (
+            <div className="text-prussian-700 font-medium text-sm pt-2">
+              {successMessage}
+            </div>
+          )}
         </form>
 
         {loading ? (
@@ -212,27 +238,94 @@ const VehicleManager: React.FC = () => {
                 key={v._id}
                 className="bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-2xl shadow-lg p-6 space-y-4 transition hover:shadow-xl"
               >
-                <div className="text-2xl font-extrabold text-[color:var(--prussian)] tracking-wide">
-                  {v.name}
-                  <span className="block text-sm font-medium text-gray-600 italic">
-                    {v.make} {v.vehicleModel}
-                  </span>
+                {/* Top row with title and vehicle controls */}
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-2xl font-extrabold text-[color:var(--prussian)] tracking-wide">
+                      {v.name}
+                    </div>
+                    <div className="text-sm font-medium text-gray-600 italic">
+                      {v.make} {v.vehicleModel}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() =>
+                        handleUpdate(v._id, {
+                          name: prompt("Enter a new name", v.name) || v.name,
+                        })
+                      }
+                      className="text-xs"
+                    >
+                      Rename Vehicle
+                    </Button>
+                    <Button
+                      className="text-xs bg-red-600 hover:bg-red-700"
+                      onClick={() => handleDelete(v._id)}
+                    >
+                      Delete Vehicle
+                    </Button>
+                  </div>
                 </div>
 
                 <div>
-                  <div className="inline-block bg-[color:var(--pink)] text-black text-xs font-semibold px-2 py-1 rounded-full mb-2">
-                    Maintenance Reminders:
+                  <div className="w-full bg-[color:var(--pink)] text-[color:var(--prussian)] text-sm font-semibold px-4 py-2 rounded-full shadow-sm text-center mb-3">
+                    Add maintenance reminders to track service by mileage
                   </div>
+
+                  <form
+                    onSubmit={(e) => handleAddReminder(e, v._id)}
+                    className="flex flex-col sm:flex-row gap-2 mb-4"
+                  >
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Reminder Name"
+                      value={reminderInputs[v._id]?.name || ""}
+                      onChange={(e) => handleReminderInput(v._id, e)}
+                      required
+                      className={`${baseFieldStyles} w-40`}
+                    />
+                    <input
+                      type="number"
+                      name="mileage"
+                      placeholder="Enter miles"
+                      value={reminderInputs[v._id]?.mileage || ""}
+                      onChange={(e) => handleReminderInput(v._id, e)}
+                      required
+                      className={`${baseFieldStyles} w-48`}
+                    />
+                    <Button type="submit" className="text-sm">
+                      Add Reminder
+                    </Button>
+                  </form>
+
+                  {/* Reminder list */}
                   {v.maintenanceReminders?.length > 0 ? (
-                    <ul className="space-y-1">
+                    <ul className="space-y-2">
                       {v.maintenanceReminders.map(
                         (reminder: any, i: number) => (
-                          <li key={i} className="text-sm text-gray-800">
-                            <span className="font-medium">{reminder.name}</span>
-                            : {reminder.mileage.toLocaleString()} miles
-                            {reminder.lastResetMileage !== undefined &&
-                              ` (Last reset at ${reminder.lastResetMileage.toLocaleString()} mi)`}
-                            <div className="inline-flex gap-2 ml-2">
+                          <li
+                            key={i}
+                            className="bg-white bg-opacity-80 border border-[color:var(--sky)] rounded-lg p-3 flex justify-between items-start shadow-sm"
+                          >
+                            <div>
+                              <div className="font-medium text-[color:var(--prussian)]">
+                                {reminder.name}:
+                              </div>
+                              <div>
+                                {reminder.mileage.toLocaleString()} miles
+                              </div>
+
+                              {reminder.lastResetMileage !== undefined && (
+                                <span>
+                                  {/* (Last reset at{" "}
+                                  {reminder.lastResetMileage.toLocaleString()}{" "}
+                                  mi) */}
+                                </span>
+                              )}
+                            </div>
+                            <div className="inline-flex gap-2 ml-4">
                               <Button
                                 onClick={() =>
                                   handleReminderEdit(
@@ -259,7 +352,7 @@ const VehicleManager: React.FC = () => {
                                 }
                                 className="text-xs px-2 py-1 bg-red-600 hover:bg-red-700"
                               >
-                                Delete
+                                Delete Reminder
                               </Button>
                             </div>
                           </li>
@@ -267,55 +360,10 @@ const VehicleManager: React.FC = () => {
                       )}
                     </ul>
                   ) : (
-                    <p className="ml-2 text-sm text-gray-500">
-                      No reminders set.
+                    <p className="text-sm text-gray-500">
+                      No reminders added yet.
                     </p>
                   )}
-                </div>
-
-                <form
-                  onSubmit={(e) => handleAddReminder(e, v._id)}
-                  className="flex flex-col sm:flex-row gap-2"
-                >
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Reminder Name"
-                    value={reminderInputs[v._id]?.name || ""}
-                    onChange={(e) => handleReminderInput(v._id, e)}
-                    required
-                    className={`${baseFieldStyles} w-40`}
-                  />
-                  <input
-                    type="number"
-                    name="mileage"
-                    placeholder="Enter miles"
-                    value={reminderInputs[v._id]?.mileage || ""}
-                    onChange={(e) => handleReminderInput(v._id, e)}
-                    required
-                    className={`${baseFieldStyles} w-48`}
-                  />
-                  <Button type="submit" className="text-sm">
-                    Add Reminder
-                  </Button>
-                </form>
-
-                <div className="flex gap-2 pt-2 border-t border-gray-300 mt-4">
-                  <Button
-                    onClick={() =>
-                      handleUpdate(v._id, {
-                        name: prompt("Enter a new name", v.name) || v.name,
-                      })
-                    }
-                  >
-                    Rename
-                  </Button>
-                  <Button
-                    className="bg-red-600 hover:bg-red-700"
-                    onClick={() => handleDelete(v._id)}
-                  >
-                    Delete
-                  </Button>
                 </div>
               </div>
             ))}

@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
-// use this in main branch
+// TODO: use this in main branch
 const allowedHost = "miletracker-client.onrender.com";
 
 // TODO: use this in dev

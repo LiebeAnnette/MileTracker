@@ -25,7 +25,6 @@ const GET_ALL_TRIPS = gql`
 `;
 
 const TripPDFButton: React.FC = () => {
-  const username = localStorage.getItem("username");
   const [selectedVehicleId, setSelectedVehicleId] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -50,16 +49,142 @@ const TripPDFButton: React.FC = () => {
     skip: selectedVehicleId === "",
   });
 
-  const trips =
-    selectedVehicleId === ""
-      ? allTripsData?.trips || []
-      : filteredTripsData?.getTripsByVehicle || [];
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    const username = localStorage.getItem("username") || "Anonymous";
+    const email = localStorage.getItem("email") || username;
+
+    const trips =
+      selectedVehicleId === ""
+        ? allTripsData?.trips || []
+        : filteredTripsData?.getTripsByVehicle || [];
+
+    const endDateObj = endDate
+      ? new Date(new Date(endDate).setHours(23, 59, 59, 999))
+      : null;
+
+    const startDateObj = startDate ? new Date(startDate) : null;
+
+    const filteredTrips = trips.filter((trip: any) => {
+      const tripDate = new Date(trip.date);
+
+      // Force tripDate into a comparable full timestamp
+      const tripTime = tripDate.getTime();
+
+      const startOK = startDateObj ? tripTime >= startDateObj.getTime() : true;
+      const endOK = endDateObj ? tripTime <= endDateObj.getTime() : true;
+
+      return startOK && endOK;
+    });
+
+    // Group trips by vehicle
+    const vehicleGroups: { [vehicleName: string]: any[] } = {};
+    filteredTrips.forEach((trip: any) => {
+      const name = trip.vehicle?.name || "Unknown Vehicle";
+      if (!vehicleGroups[name]) vehicleGroups[name] = [];
+      vehicleGroups[name].push(trip);
+    });
+
+    // COVER PAGE
+    doc.setFontSize(18);
+    doc.text(`MileTracker Trip Report for ${email}`, 14, 20);
+
+    doc.setFontSize(12);
+    const reportDate = new Date().toLocaleString("en-US", {
+      dateStyle: "long",
+      timeStyle: "short",
+    });
+    doc.text(`Generated: ${reportDate}`, 14, 30);
+
+    const vehicleTitle =
+      selectedVehicleId === ""
+        ? "All Vehicles"
+        : Object.keys(vehicleGroups)[0] || "Unknown Vehicle";
+    doc.text(`Vehicle: ${vehicleTitle}`, 14, 38);
+
+    const totalTrips = filteredTrips.length;
+    const totalMiles = filteredTrips.reduce(
+      (acc: number, trip: any) => acc + trip.miles,
+      0
+    );
+
+    doc.text(`Total Trips: ${totalTrips}`, 14, 46);
+    doc.text(`Total Miles: ${totalMiles.toFixed(2)}`, 14, 54);
+
+    doc.text("Vehicle Breakdown:", 14, 64);
+
+    let y = 72;
+    for (const [vehicleName, trips] of Object.entries(vehicleGroups)) {
+      const vehicleMiles = trips.reduce(
+        (sum: number, t: any) => sum + t.miles,
+        0
+      );
+      doc.text(
+        `${vehicleName} — Trips: ${trips.length}, Miles: ${vehicleMiles.toFixed(
+          2
+        )}`,
+        14,
+        y
+      );
+      y += 8;
+    }
+
+    // PER VEHICLE SECTIONS
+    for (const [vehicleName, trips] of Object.entries(vehicleGroups)) {
+      doc.addPage();
+      y = 20;
+
+      const printPageHeader = () => {
+        doc.setFontSize(14);
+        doc.text(`Vehicle: ${vehicleName}`, 14, y);
+        y += 10;
+        doc.setFontSize(11);
+      };
+
+      printPageHeader();
+
+      trips.forEach((trip: any, index: number) => {
+        const tripDate = new Date(trip.date).toLocaleDateString();
+        // const weather = trip.weather || "N/A";
+
+        const lines = [
+          `Trip ${index + 1}`,
+          `From: ${trip.startLocation}`,
+          `To: ${trip.endLocation}`,
+          `Distance: ${trip.miles.toFixed(2)} miles`,
+          `Date: ${tripDate}`,
+        ];
+
+        lines.forEach((line: string) => {
+          if (y > 270) {
+            doc.addPage();
+            y = 20;
+            printPageHeader();
+          }
+          doc.text(line, 14, y);
+          y += 8;
+        });
+
+        // Separator line
+        doc.setDrawColor(150);
+        doc.line(14, y, 195, y);
+        y += 10;
+      });
+    }
+
+    // PAGE NUMBERS
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: "center" });
+    }
+
+    doc.save("trip_report.pdf");
+  };
+
   const loading = selectedVehicleId === "" ? loadingAllTrips : loadingFiltered;
   const error = selectedVehicleId === "" ? errorAllTrips : errorFiltered;
-
-  const generatePDF = () => {
-    // ... existing generatePDF logic remains unchanged ...
-  };
 
   return (
     <div>
@@ -144,7 +269,6 @@ const TripPDFButton: React.FC = () => {
             <p className="text-red-600">Error loading trips.</p>
           ) : (
             <div className="flex flex-col lg:flex-row gap-6 items-center w-full max-w-4xl">
-              {/* PDF Buttons Section */}
               <div className="space-y-4 flex-1 w-full">
                 <div className="bg-[color:var(--off-white)] border border-[color:var(--pink)] p-4 rounded-xl shadow flex items-center justify-between">
                   <span className="text-[color:var(--prussian)] font-semibold">
@@ -174,7 +298,6 @@ const TripPDFButton: React.FC = () => {
                 </div>
               </div>
 
-              {/* Lottie Animation Section */}
               <div className="w-full lg:w-1/3 flex justify-center">
                 <LottieAnimation />
               </div>

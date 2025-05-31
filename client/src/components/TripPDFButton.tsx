@@ -6,6 +6,7 @@ import { GET_TRIPS_BY_VEHICLE } from "../graphql/tripQueries";
 import Card from "./Card";
 import Button from "./Button";
 import { selectFieldStyles } from "../../styles/styles";
+import LottieAnimation from "./LottieAnimation";
 
 const GET_ALL_TRIPS = gql`
   query GetAllTrips {
@@ -210,40 +211,58 @@ const TripPDFButton: React.FC = () => {
   };
 
   return (
-    <Card
-      title={
-        <div className="heading-xl text-center text-black">
-          Export Trips by Vehicle
-        </div>
-      }
-    >
-      <div className="flex flex-col items-center space-y-4">
-        {loadingVehicles ? (
-          <p>Loading vehicles...</p>
-        ) : (
-          <select
-            value={selectedVehicleId}
-            onChange={(e) => setSelectedVehicleId(e.target.value)}
-            className={`${selectFieldStyles} w-full max-w-md`}
-          >
-            <option value="">All Vehicles</option>
-            {vehicleData?.vehicles.map((v: any) => (
-              <option key={v._id} value={v._id}>
-                {v.name} ({v.make} {v.vehicleModel})
-              </option>
-            ))}
-          </select>
-        )}
+    <div>
+      <Card
+        title={
+          <div className="heading-xl text-center text-black">
+            Trip Report Printer
+          </div>
+        }
+      >
+        <div className="flex flex-col items-center space-y-4">
+          {loadingVehicles ? (
+            <p>Loading vehicles...</p>
+          ) : (
+            <select
+              value={selectedVehicleId}
+              onChange={(e) => setSelectedVehicleId(e.target.value)}
+              className={`${selectFieldStyles} w-full max-w-md`}
+            >
+              <option value="">All Vehicles</option>
+              {vehicleData?.vehicles.map((v: any) => (
+                <option key={v._id} value={v._id}>
+                  {v.name} ({v.make} {v.vehicleModel})
+                </option>
+              ))}
+            </select>
+          )}
 
-        {loading ? (
-          <p>Loading trips...</p>
-        ) : error ? (
-          <p className="text-red-600">Error loading trips.</p>
-        ) : (
-          <Button onClick={generatePDF}>Download Trip PDF</Button>
-        )}
-      </div>
-    </Card>
+          {loading ? (
+            <p>Loading trips...</p>
+          ) : error ? (
+            <p className="text-red-600">Error loading trips.</p>
+          ) : (
+            <Button onClick={generatePDF}>Download Trip PDF</Button>
+          )}
+          <div className="bg-[color:var(--off-white)] bg-opacity-40 p-4 rounded-xl shadow-sm max-w-2xl w-full">
+            <ul className="text-left text-lg text-[color:var(--prussian)] list-disc list-inside space-y-2">
+              <li>
+                Use this tool to generate a mileage report for tax purposes.
+              </li>
+              <li>Select a specific vehicle or choose “All Vehicles.”</li>
+              <li>
+                The PDF will include a summary of your trips grouped by vehicle.
+              </li>
+              <li>
+                Each section includes total miles traveled to support mileage
+                deductions.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+      <LottieAnimation />
+    </div>
   );
 };
 

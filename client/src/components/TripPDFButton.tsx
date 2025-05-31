@@ -57,7 +57,8 @@ const TripPDFButton: React.FC = () => {
   const error = selectedVehicleId === "" ? errorAllTrips : errorFiltered;
 
   const generatePDF = () => {
-    const doc = new jsPDF();
+    const doc: jsPDF = new jsPDF();
+
     const now = new Date();
     const localDateTime = now.toLocaleString(undefined, {
       dateStyle: "medium",
@@ -138,8 +139,8 @@ const TripPDFButton: React.FC = () => {
           y += 5;
           doc.text(`Date: ${new Date(trip.date).toLocaleDateString()}`, 10, y);
           y += 5;
-          doc.text(`Weather: ${trip.weather}`, 10, y);
-          y += 7;
+          // doc.text(`Weather: ${trip.weather}`, 10, y);
+          // y += 7;
 
           doc.setDrawColor(180);
           doc.line(10, y, 200, y);
@@ -191,8 +192,8 @@ const TripPDFButton: React.FC = () => {
         y += 5;
         doc.text(`Date: ${new Date(trip.date).toLocaleDateString()}`, 10, y);
         y += 5;
-        doc.text(`Weather: ${trip.weather}`, 10, y);
-        y += 7;
+        // doc.text(`Weather: ${trip.weather}`, 10, y);
+        // y += 7;
 
         doc.setDrawColor(180);
         doc.line(10, y, 200, y);
@@ -205,6 +206,17 @@ const TripPDFButton: React.FC = () => {
 
         doc.setFontSize(12);
       });
+    }
+    const totalPages = (doc as any).internal.getNumberOfPages();
+
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.text(
+        `Page ${i} of ${totalPages}`,
+        doc.internal.pageSize.getWidth() - 40,
+        doc.internal.pageSize.getHeight() - 10
+      );
     }
 
     doc.save("trip-report.pdf");

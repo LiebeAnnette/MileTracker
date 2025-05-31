@@ -59,20 +59,16 @@ const TripPDFButton: React.FC = () => {
         ? allTripsData?.trips || []
         : filteredTripsData?.getTripsByVehicle || [];
 
-    const endDateObj = endDate
-      ? new Date(new Date(endDate).setHours(23, 59, 59, 999))
-      : null;
-
-    const startDateObj = startDate ? new Date(startDate) : null;
-
     const filteredTrips = trips.filter((trip: any) => {
-      const tripDate = new Date(trip.date);
+      const tripTime = new Date(trip.date).getTime();
 
-      // Force tripDate into a comparable full timestamp
-      const tripTime = tripDate.getTime();
+      const startOK = startDate
+        ? tripTime >= new Date(startDate + "T00:00:00").getTime()
+        : true;
 
-      const startOK = startDateObj ? tripTime >= startDateObj.getTime() : true;
-      const endOK = endDateObj ? tripTime <= endDateObj.getTime() : true;
+      const endOK = endDate
+        ? tripTime <= new Date(endDate + "T23:59:59.999").getTime()
+        : true;
 
       return startOK && endOK;
     });
@@ -201,7 +197,7 @@ const TripPDFButton: React.FC = () => {
               <p>
                 Choose a vehicle or select "All Vehicles" to generate a report.
               </p>
-              <p>Optional: Set a start and end date to filter trips by date.</p>
+              <p>Optional: Filter trips by Start and End dates.</p>
             </div>
           </div>
         </div>

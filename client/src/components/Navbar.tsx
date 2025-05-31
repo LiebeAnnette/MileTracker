@@ -29,7 +29,7 @@ const Navbar: React.FC = () => {
             <Link to="/add-trip">Add Trip</Link>
             <Link to="/trips">Your Trips</Link>
             <Link to="/alerts">Service Alerts</Link>
-            <Link to="/pdf">Generate PDF</Link>
+            <Link to="/pdf">PDF Generator</Link>
           </div>
           <div className="logout-container">
             <button onClick={handleLogout}>Logout</button>

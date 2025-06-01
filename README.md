@@ -62,7 +62,7 @@ Register and log in with a username and password. Authenticated users have priva
 
 ### Your Trips Page
 
-![Your Trips Page](./images/MileTracker-TripDashboard.jpg)
+![Your Trips Page](./images/MileTracker-TripDashboardR.jpg)
 
 ### Trip Report Printer Page
 

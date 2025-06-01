@@ -42,6 +42,32 @@ Register and log in with a username and password. Authenticated users have priva
 - **Frontend:** [https://miletracker-client.onrender.com](https://miletracker-client.onrender.com)
 - **Backend (GraphQL API):** [https://miletracker-wokk.onrender.com/graphql](https://miletracker-wokk.onrender.com/graphql)
 
+## 📸 Screenshots
+
+### Login Page
+
+![Login Page](./images/MileTracker-LoginPage.jpg)
+
+### Home Page
+
+![Home Page](./images/MileTracker-HomePage.jpg)
+
+### Vehicle Manager Page
+
+![Vehicle Manager](./images/MileTracker-VehicleManager.jpg)
+
+### Add Trip Page
+
+![Add Trip Page](./images/MileTracker-AddTrip.jpg)
+
+### Your Trips Page
+
+![Your Trips Page](./images/MileTracker-TripDashboard.jpg)
+
+### Trip Report Printer Page
+
+![Trip Report Printer Page](./images/MileTracker-TripReportPrinter.jpg)
+
 ---
 
 ## 🧪 Local Development

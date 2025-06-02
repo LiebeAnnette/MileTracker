@@ -300,7 +300,7 @@ useEffect(() => {
 
   return (
     <Card
-      title={<h1 className="heading-xl text-center text-black">Add Trip</h1>}
+      title={<div className="heading-xl text-center text-black">Add Trip</div>}
     >
       <form
         onSubmit={handleSubmit}
@@ -328,7 +328,7 @@ useEffect(() => {
         )}
 
         <div className="grid grid-cols-2 gap-4 w-full max-w-4xl">
-          <div>
+          <div className="bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-xl p-4 space-y-2 shadow-sm">
             <h4 className="heading-md text-black mb-2">Start Location</h4>
             <input
               className={baseFieldStyles}
@@ -362,7 +362,7 @@ useEffect(() => {
             </select>
           </div>
 
-          <div>
+          <div className="bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-xl p-4 space-y-2 shadow-sm">
             <h4 className="heading-md text-black mb-2">End Location</h4>
             <input
               className={baseFieldStyles}

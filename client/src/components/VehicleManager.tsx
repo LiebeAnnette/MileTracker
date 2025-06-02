@@ -11,6 +11,12 @@ import {
   ADD_MAINTENANCE_REMINDER,
 } from "../graphql/vehicleQueries";
 import { GET_ALERT_MESSAGES } from "../graphql/maintenanceQueries";
+import Card from "./Card";
+import Button from "./Button";
+import { baseFieldStyles } from "../../styles/styles";
+import confetti from "canvas-confetti";
+import MaintenanceAlerts from "./MaintenanceAlerts";
+
 
 const VehicleManager: React.FC = () => {
   const { data, loading, error } = useQuery(GET_VEHICLES);
@@ -51,6 +57,8 @@ const VehicleManager: React.FC = () => {
   const [reminderInputs, setReminderInputs] = useState<
     Record<string, { name: string; mileage: string }>
   >({});
+
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -100,11 +108,26 @@ const VehicleManager: React.FC = () => {
     e.preventDefault();
     try {
       await addVehicle({ variables: formState });
+
+      // 🎉 Confetti
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+      });
+
+      // ✅ Set success message
+      setSuccessMessage("Vehicle added successfully!");
+
+      // Clear form
       setFormState({
         name: "",
         make: "",
         vehicleModel: "",
       });
+
+      // ⏳ Clear message after a few seconds
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
       console.error("Failed to add vehicle:", err);
     }
@@ -154,142 +177,200 @@ const VehicleManager: React.FC = () => {
   };
 
   return (
-    <div className="addVehicle">
-      <form onSubmit={handleSubmit}>
-        <button type="submit">Add Vehicle</button>
-        <input
-          name="name"
-          placeholder="Vehicle Name"
-          value={formState.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          name="make"
-          placeholder="Make"
-          value={formState.make}
-          onChange={handleChange}
-        />
-        <input
-          name="vehicleModel"
-          placeholder="Model"
-          value={formState.vehicleModel}
-          onChange={handleChange}
-        />
-      </form>
+    <Card
+      title={
+        <div className="heading-xl text-center text-black">Vehicle Manager</div>
+      }
+    >
+      <div className="flex flex-col items-center space-y-6">
+        <MaintenanceAlerts />
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-3xl flex flex-col items-center bg-white p-6 rounded-xl shadow-md border border-gray-200 space-y-6"
+        >
+          <div className="heading-xl text-center text-prussian">
+            Add Vehicle
+          </div>
 
-      {loading ? (
-        <p>Loading vehicles...</p>
-      ) : error ? (
-        <p>Error loading vehicles: {error.message}</p>
-      ) : (
-        <div className="vehicleGrid">
-          {data.vehicles.map((v: any) => (
-            <div key={v._id} className="vehicle-card">
-              <strong>{v.name}</strong> ({v.make} {v.vehicleModel})<br />
-              <em>Maintenance Reminders:</em>
-              {v.maintenanceReminders?.length > 0 ? (
-                <ul>
-                  {v.maintenanceReminders.map((reminder: any, i: number) => (
-                    <li key={i}>
-                      {reminder.name}: {reminder.mileage.toLocaleString()} miles
-                      {reminder.lastResetMileage !== undefined &&
-                        ` (Last reset at ${reminder.lastResetMileage.toLocaleString()} mi)`}
-                      <button
-                        onClick={() =>
-                          handleReminderEdit(
-                            v._id,
-                            reminder.name,
-                            reminder.mileage
-                          )
-                        }
-                        style={{ marginLeft: "0.5rem" }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleReminderReset(v._id, reminder.name)
-                        }
-                        style={{ marginLeft: "0.5rem" }}
-                      >
-                        Reset
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleReminderDelete(v._id, reminder.name)
-                        }
-                        style={{ marginLeft: "0.5rem" }}
-                      >
-                        Delete
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p style={{ marginLeft: "1rem", color: "#777" }}>
-                  No reminders set.
-                </p>
-              )}
-              <form
-                onSubmit={(e) => handleAddReminder(e, v._id)}
-                style={{ marginTop: "0.5rem" }}
-              >
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Reminder Name"
-                  value={reminderInputs[v._id]?.name || ""}
-                  onChange={(e) => handleReminderInput(v._id, e)}
-                  required
-                />
-                <input
-                  type="number"
-                  name="mileage"
-                  placeholder="Enter number of miles"
-                  value={reminderInputs[v._id]?.mileage || ""}
-                  onChange={(e) => handleReminderInput(v._id, e)}
-                  required
-                />
-                <button type="submit">Add Reminder</button>
-              </form>
-              <button
-                onClick={() =>
-                  handleUpdate(v._id, {
-                    name: prompt("Enter a new name", v.name) || v.name,
-                  })
-                }
-                style={{
-                  marginLeft: "0.5rem",
-                  backgroundColor: "#337ab7",
-                  color: "white",
-                  border: "none",
-                  padding: "0.2rem 0.5rem",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                Rename
-              </button>
-              <button
-                onClick={() => handleDelete(v._id)}
-                style={{
-                  marginLeft: "1rem",
-                  backgroundColor: "#cc3333",
-                  color: "white",
-                  border: "none",
-                  padding: "0.2rem 0.5rem",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                Delete
-              </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
+            <input
+              name="name"
+              placeholder="Vehicle Name"
+              value={formState.name}
+              onChange={handleChange}
+              required
+              className={baseFieldStyles}
+            />
+            <input
+              name="make"
+              placeholder="Make"
+              value={formState.make}
+              onChange={handleChange}
+              className={baseFieldStyles}
+            />
+            <input
+              name="vehicleModel"
+              placeholder="Model"
+              value={formState.vehicleModel}
+              onChange={handleChange}
+              className={baseFieldStyles}
+            />
+          </div>
+
+          <Button type="submit" className="self-center">
+            Add Vehicle
+          </Button>
+          {successMessage && (
+            <div className="text-prussian-700 font-medium text-sm pt-2">
+              {successMessage}
             </div>
-          ))}
-        </div>
-      )}
-    </div>
+          )}
+        </form>
+
+        {loading ? (
+          <p>Loading vehicles...</p>
+        ) : error ? (
+          <p>Error loading vehicles: {error.message}</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
+            {data.vehicles.map((v: any) => (
+              <div
+                key={v._id}
+                className="bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-2xl shadow-lg p-6 space-y-4 transition hover:shadow-xl"
+              >
+                {/* Top row with title and vehicle controls */}
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-2xl font-extrabold text-[color:var(--prussian)] tracking-wide">
+                      {v.name}
+                    </div>
+                    <div className="text-sm font-medium text-gray-600 italic">
+                      {v.make} {v.vehicleModel}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() =>
+                        handleUpdate(v._id, {
+                          name: prompt("Enter a new name", v.name) || v.name,
+                        })
+                      }
+                      className="text-xs"
+                    >
+                      Rename Vehicle
+                    </Button>
+                    <Button
+                      className="text-xs bg-red-600 hover:bg-red-700"
+                      onClick={() => handleDelete(v._id)}
+                    >
+                      Delete Vehicle
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="w-full bg-[color:var(--pink)] text-[color:var(--prussian)] text-sm font-semibold px-4 py-2 rounded-full shadow-sm text-center mb-3">
+                    Add maintenance reminders to track service by mileage
+                  </div>
+
+                  <form
+                    onSubmit={(e) => handleAddReminder(e, v._id)}
+                    className="flex flex-col sm:flex-row gap-2 mb-4"
+                  >
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Reminder Name"
+                      value={reminderInputs[v._id]?.name || ""}
+                      onChange={(e) => handleReminderInput(v._id, e)}
+                      required
+                      className={`${baseFieldStyles} w-40`}
+                    />
+                    <input
+                      type="number"
+                      name="mileage"
+                      placeholder="Enter miles"
+                      value={reminderInputs[v._id]?.mileage || ""}
+                      onChange={(e) => handleReminderInput(v._id, e)}
+                      required
+                      className={`${baseFieldStyles} w-48`}
+                    />
+                    <Button type="submit" className="text-sm">
+                      Add Reminder
+                    </Button>
+                  </form>
+
+                  {/* Reminder list */}
+                  {v.maintenanceReminders?.length > 0 ? (
+                    <ul className="space-y-2">
+                      {v.maintenanceReminders.map(
+                        (reminder: any, i: number) => (
+                          <li
+                            key={i}
+                            className="bg-white bg-opacity-80 border border-[color:var(--sky)] rounded-lg p-3 flex justify-between items-start shadow-sm"
+                          >
+                            <div>
+                              <div className="font-medium text-[color:var(--prussian)]">
+                                {reminder.name}:
+                              </div>
+                              <div>
+                                {reminder.mileage.toLocaleString()} miles
+                              </div>
+
+                              {reminder.lastResetMileage !== undefined && (
+                                <span>
+                                  {/* (Last reset at{" "}
+                                  {reminder.lastResetMileage.toLocaleString()}{" "}
+                                  mi) */}
+                                </span>
+                              )}
+                            </div>
+                            <div className="inline-flex gap-2 ml-4">
+                              <Button
+                                onClick={() =>
+                                  handleReminderEdit(
+                                    v._id,
+                                    reminder.name,
+                                    reminder.mileage
+                                  )
+                                }
+                                className="text-xs px-2 py-1"
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                onClick={() =>
+                                  handleReminderReset(v._id, reminder.name)
+                                }
+                                className="text-xs px-2 py-1"
+                              >
+                                Reset
+                              </Button>
+                              <Button
+                                onClick={() =>
+                                  handleReminderDelete(v._id, reminder.name)
+                                }
+                                className="text-xs px-2 py-1 bg-red-600 hover:bg-red-700"
+                              >
+                                Delete Reminder
+                              </Button>
+                            </div>
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-gray-500">
+                      No reminders added yet.
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </Card>
   );
 };
 

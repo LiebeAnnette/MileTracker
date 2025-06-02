@@ -7,7 +7,7 @@ export async function getVehiclesNeedingMaintenance(userId: string) {
 
   const mileageByVehicle: Record<string, number> = {};
 
-  // Calculate total miles for each vehicle
+  // 1. Sum total miles per vehicle (keep for PDF)
   trips.forEach((trip) => {
     const vehicleId = trip.vehicle?.toString();
     if (vehicleId) {
@@ -16,21 +16,37 @@ export async function getVehiclesNeedingMaintenance(userId: string) {
     }
   });
 
-  // Return vehicles with at least one overdue maintenance reminder
-  return vehicles
-    .map((vehicleDoc) => {
-      const vehicle = vehicleDoc.toObject() as IVehicle & { _id: string };
-      const totalMiles = mileageByVehicle[vehicle._id.toString()] || 0;
+  // 2. Map each vehicle and compute mileageSinceReset per reminder
+  return vehicles.flatMap((vehicleDoc) => {
+    const vehicle = vehicleDoc.toObject() as IVehicle & { _id: string };
+    const vehicleId = vehicle._id.toString();
+    const totalMiles = mileageByVehicle[vehicleId] || 0;
 
-      return {
-        ...vehicle,
-        totalMiles,
-      };
-    })
-    .filter((vehicle) =>
-      vehicle.maintenanceReminders?.some((reminder: IMaintenanceReminder) => {
+    // Go through each reminder and calculate if it's overdue
+    const overdueReminders = vehicle.maintenanceReminders
+      .map((reminder) => {
         const lastReset = reminder.lastResetMileage || 0;
-        return vehicle.totalMiles >= lastReset + reminder.mileage;
+        const milesSinceReset = totalMiles - lastReset;
+
+        if (milesSinceReset >= reminder.mileage) {
+          return {
+            vehicleId,
+            vehicleName: vehicle.name,
+            reminderName: reminder.name,
+            milesSinceReset,
+            threshold: reminder.mileage,
+            alert: `${vehicle.name} is due for ${
+              reminder.name
+            } — ${milesSinceReset.toFixed(
+              2
+            )} miles since last reset (limit: ${reminder.mileage.toFixed(2)}).`,
+          };
+        }
+
+        return null;
       })
-    );
+      .filter(Boolean);
+
+    return overdueReminders;
+  });
 }

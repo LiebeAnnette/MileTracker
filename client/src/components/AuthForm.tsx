@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { useAuth } from "../context/AuthContext";
+import Card from "./Card";
+import Button from "./Button";
 
 const REGISTER = gql`
   mutation Register($username: String!, $password: String!) {
@@ -35,18 +37,15 @@ const AuthForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       const mutation = isLogin ? login : register;
-      const result = await mutation({
-        variables: { username, password },
-      });
-      
+      const result = await mutation({ variables: { username, password } });
       const data = isLogin ? result.data.login : result.data.register;
-      localStorage.setItem("username", data.user.username); // ✅ Save username!
-      localStorage.setItem("token", data.token); // (optional)
+
+      localStorage.setItem("username", data.user.username);
+      localStorage.setItem("token", data.token);
       setToken(data.token);
-      
+
       setUsername("");
       setPassword("");
     } catch (error: any) {
@@ -56,31 +55,57 @@ const AuthForm: React.FC = () => {
   };
 
   return (
-    <div className="auth-container">
-      <h2>{isLogin ? "Login" : "Register"}</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          value={username}
-          placeholder="Username"
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          value={password}
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">{isLogin ? "Login" : "Register"}</button>
-      </form>
-      <button
-        onClick={() => setIsLogin(!isLogin)}
-        className="auth-toggle"
-        style={{ marginTop: "0.5rem" }}
-      >
-        {isLogin
-          ? "Need an account? Register"
-          : "Already have an account? Login"}
-      </button>
+    <div className="min-h-screen flex items-center justify-center bg-[color:var(--sky)] bg-opacity-10 p-4">
+      <Card>
+        <div className="flex flex-col items-center text-center space-y-4 p-4">
+          {/* Smaller Logo */}
+          <img
+            src="/MileTrackerLogo.png"
+            alt="MileTracker full logo"
+            className="w-56 mb-2 drop-shadow"
+            style={{ borderRadius: "0.5rem" }}
+          />
+
+          {/* Login/Register Heading */}
+          <h2 className="heading-xl text-[color:var(--prussian)]">
+            {isLogin ? "Login" : "Register"}
+          </h2>
+
+          {/* Form */}
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col space-y-4 w-full max-w-md"
+          >
+            <input
+              className="rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--teal)] bg-white text-black"
+              type="text"
+              value={username}
+              placeholder="Username"
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              className="rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--teal)] bg-white text-black"
+              type="password"
+              value={password}
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button type="submit" className="w-full">
+              {isLogin ? "Login" : "Register"}
+            </Button>
+          </form>
+
+          {/* Toggle Login/Register */}
+          <button
+            onClick={() => setIsLogin(!isLogin)}
+            className="mt-4 text-sm text-[color:var(--prussian)] hover:underline"
+          >
+            {isLogin
+              ? "Need an account? Register"
+              : "Already have an account? Login"}
+          </button>
+        </div>
+      </Card>
     </div>
   );
 };

@@ -11,21 +11,21 @@ export const ADD_EXPENSE_FOLDER = gql`
 `;
 
 export const ADD_EXPENSE = gql `
-    mutation AddExpense(
-        $folderID: ID!
+    mutation AddExpenseToFolder(
+        $folderId: ID!
         $category: String!
         $amount: Float!
         $description: String
     ) {
-        addExpense(
-            folderID: $folderID
+        addExpenseToFolder(
+            folderId: $folderId
             category: $category
             amount: $amount
             description: $description
         ) {
         _id
         title
-        expense {
+        expenses {
             category
             description
             amount

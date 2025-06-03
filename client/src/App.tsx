@@ -13,6 +13,7 @@ import VehicleManager from "./components/VehicleManager";
 import MaintenanceAlerts from "./components/MaintenanceAlerts";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import ExpenseManager from "./components/ExpenseManager";
 
 const App: React.FC = () => {
   const { token } = useAuth();
@@ -34,6 +35,7 @@ const App: React.FC = () => {
         <Route path="/alerts" element={<MaintenanceAlerts />} />
         <Route path="/pdf" element={<TripPDFButton />} />
         <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/expenses" element={<ExpenseManager />} />
       </Routes>
       </div>
       <Footer />

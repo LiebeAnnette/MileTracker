@@ -23,7 +23,7 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
         <div style={{ border: "1px solid #ccc", padding: "1rem", borderRadius: "8px" }}>
             <h3>{folder.title}</h3>
             <p style={{ color: "#777" }}>
-                Created on: {new Date(folder.createdAt).toLocaleDateString()}
+                Created on: {new Date(Number(folder.createdAt)).toLocaleDateString()}
             </p>
 
             {folder.expenses.length === 0 ? (

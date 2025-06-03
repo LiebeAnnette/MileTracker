@@ -22,6 +22,8 @@ const httpLink = createHttpLink({
   uri: "https://miletracker-wokk.onrender.com/graphql",
 });
 
+//delete this line//
+
 // Attach token to headers
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("token");

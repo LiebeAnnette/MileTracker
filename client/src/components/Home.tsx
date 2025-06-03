@@ -1,6 +1,7 @@
 import React from "react";
 import Card from "./Card";
 import CarAnimation from "./CarAnimation";
+import TipsPanel from "./TipsPanel";
 
 const Home: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const Home: React.FC = () => {
         </p>
       </div>
 
+      <TipsPanel />
       <CarAnimation />
     </Card>
   );

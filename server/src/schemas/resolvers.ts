@@ -6,6 +6,7 @@ import { signToken } from "../utils/auth";
 import Vehicle from "../models/Vehicle";
 import ExpenseFolder from "../models/ExpenseFolder";
 import { AuthenticationError } from "apollo-server-express";
+import { getRandomParkFact } from "../utils/getParkFact";
 
 export const resolvers = {
   Trip: {
@@ -99,6 +100,10 @@ export const resolvers = {
     getMyExpenseFolders: async (_root: any, _: any, context: any) => {
       if (!context.user) throw new AuthenticationError("Not authenticated");
       return await ExpenseFolder.find({ userId: context.user._id });
+    },
+
+    getParkFact: async () => {
+      return await getRandomParkFact();
     },
   },
 

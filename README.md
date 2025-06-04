@@ -68,6 +68,17 @@ Register and log in with a username and password. Authenticated users have priva
 
 ![Trip Report Printer Page](./images/MileTracker-TripReportPrinter.jpg)
 
+<!-- TODO:
+### Expense Report Printer Page
+
+![[insert Expense Report Page Here] Page](./images/[your-file-name-here]) -->
+
+<!-- TODO:
+
+### Google Maps Feature
+
+![[insert Google Maps Feature Here] Page](./images/[your-file-name-here]) -->
+
 ---
 
 ## 🧪 Local Development

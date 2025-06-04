@@ -72,11 +72,18 @@ nav button:hover {
 }
 
 .logout-container {
-  position: absolute;
-  top: 1rem;
-  right: 2rem;
-  z-index: 10;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 }
+
+@media (min-width: 768px) {
+  .logout-container {
+    justify-content: flex-end;
+    margin-top: 0;
+  }
+}
+
 .logo-title {
   display: flex;
   align-items: center;
@@ -91,3 +98,31 @@ nav button:hover {
   transform: none;
 }
 
+.navbar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .navbar-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+.nav-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .nav-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}

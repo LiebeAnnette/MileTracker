@@ -16,7 +16,7 @@ const AnimationContainer: React.FC = () => {
         } while (next === prev); // Avoid repeating the same image
         return next;
       });
-    }, 1000); // 8000ms = 8 seconds
+    }, 8000); // 8000ms = 8 seconds
 
     return () => clearInterval(interval);
   }, []);

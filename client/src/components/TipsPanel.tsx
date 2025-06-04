@@ -21,6 +21,7 @@ const TipsPanel: React.FC = () => {
   const [useParkNext, setUseParkNext] = useState<boolean>(false);
 
   const [loadParkFact] = useLazyQuery(GET_PARK_FACT, {
+    fetchPolicy: "network-only", // 👈 this forces a new request every time
     onCompleted: (data) => {
       setFact(data.getParkFact);
       setLoading(false);

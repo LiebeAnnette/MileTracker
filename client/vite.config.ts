@@ -9,8 +9,6 @@ const allowedHost = "miletracker-client.onrender.com";
 // TODO: use this in dev
 // const allowedHost = "miletracker-devclient.onrender.com";
 
-// ?deletethis
-
 export default defineConfig({
   plugins: [
     react(),

@@ -239,7 +239,9 @@ const TripForm: React.FC<{ onTripAdded?: () => void }> = ({ onTripAdded }) => {
 
         <div className="grid grid-cols-2 gap-4 w-full max-w-4xl">
           <div className="bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-xl p-4 space-y-2 shadow-sm">
-            <h4 className="heading-md text-black mb-2">Start Location</h4>
+            <h4 className="heading-md text-black mb-2 whitespace-nowrap">
+              Start Location
+            </h4>
             <input
               className={baseFieldStyles}
               name="startStreet"
@@ -272,7 +274,9 @@ const TripForm: React.FC<{ onTripAdded?: () => void }> = ({ onTripAdded }) => {
           </div>
 
           <div className="bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-xl p-4 space-y-2 shadow-sm">
-            <h4 className="heading-md text-black mb-2">End Location</h4>
+            <h4 className="heading-md text-black mb-2 whitespace-nowrap">
+              End Location
+            </h4>
             <input
               className={baseFieldStyles}
               name="endStreet"

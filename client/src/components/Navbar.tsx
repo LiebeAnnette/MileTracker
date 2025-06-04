@@ -11,15 +11,16 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav>
-      <div className="nav-header">
-        <img
-          src="/MileTrackerLogo-favicon.png"
-          alt="MileTracker Logo"
-          className="logo-icon"
-        />
-        <h2 className="nav-title">MileTracker</h2>
-      </div>
+    <nav className="navbar">
+      <div className="navbar-container">
+        <div className="nav-header">
+          <img
+            src="/MileTrackerLogo-favicon.png"
+            alt="MileTracker Logo"
+            className="logo-icon"
+          />
+          <h2 className="nav-title">MileTracker</h2>
+        </div>
 
       {token && (
         <>
@@ -32,11 +33,8 @@ const Navbar: React.FC = () => {
             <Link to="/pdf">PDF Generator</Link>
             <Link to="/expenses">Expense Manager</Link>
           </div>
-          <div className="logout-container">
-            <button onClick={handleLogout}>Logout</button>
-          </div>
-        </>
-      )}
+        )}
+      </div>
     </nav>
   );
 

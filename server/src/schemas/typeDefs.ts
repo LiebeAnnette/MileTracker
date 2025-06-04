@@ -56,6 +56,7 @@ const typeDefs = gql`
     maintenanceAlerts: [MaintenanceAlert]
     getTripsByVehicle(vehicleId: ID!): [Trip]
     getMyExpenseFolders: [ExpenseFolder]
+    getParkFact: String
   }
 
   type Expense {
@@ -74,7 +75,8 @@ const typeDefs = gql`
   type Mutation {
     register(username: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
-    
+    addExpenseFolder(title: String!): ExpenseFolder
+
     addTrip(
       startLocation: String!
       endLocation: String!
@@ -110,16 +112,6 @@ const typeDefs = gql`
     resetMaintenanceReminder(vehicleId: ID!, name: String!): Vehicle
 
     deleteMaintenanceReminder(vehicleId: ID!, name: String!): Vehicle
-
-    addExpenseFolder(title: String!): ExpenseFolder
-    
-    addExpenseToFolder(
-      folderId: ID!
-      category: String!
-      amount: Float!
-      description: String
-    ): ExpenseFolder
-
   }
 `;
 

@@ -227,8 +227,13 @@ const TripPDFButton: React.FC = () => {
             </div>
           )}
 
+
+          <div className="flex flex-col gap-4 w-full max-w-xs">
+            <label className="flex flex-col text-sm font-semibold text-[color:var(--prussian)]">
+
           <div className="flex flex-col sm:flex-row gap-4 items-start w-full max-w-md">
             <label className="flex flex-col text-sm font-semibold text-[color:var(--prussian)] w-full">
+
               Start Date
               <input
                 type="date"
@@ -237,6 +242,24 @@ const TripPDFButton: React.FC = () => {
                 className="mt-1 bg-[color:var(--off-white)] border border-[color:var(--pink)] rounded-xl px-4 py-2 shadow-sm text-black w-full"
               />
             </label>
+
+            <label className="flex flex-col text-sm font-semibold text-[color:var(--prussian)]">
+              End Date
+              <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="mt-1 bg-[color:var(--off-white)] border border-[color:var(--pink)] rounded-xl px-4 py-2 shadow-sm text-black w-full"/>
+              </label>
+              <Button
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+              }}
+              className="bg-[color:var(--sky)] hover:bg-[color:var(--teal)] text-white px-3 py-2 rounded shadow w-full">
+                Clear
+                </Button>
+
 
             <label className="flex flex-col text-sm font-semibold text-[color:var(--prussian)] w-full">
               End Date
@@ -259,6 +282,7 @@ const TripPDFButton: React.FC = () => {
                 Clear Dates
               </Button>
             </div>
+
           </div>
 
           {loading ? (
@@ -274,7 +298,7 @@ const TripPDFButton: React.FC = () => {
                   </span>
                   <Button
                     onClick={generatePDF}
-                    className="bg-[color:var(--orange)] hover:bg-[color:var(--yellow)] text-white px-4 py-2 rounded-xl shadow-md"
+                    className="bg-[color:var(--orange)] hover:bg-[color:var(--yellow)] text-white px-4 py-2 rounded-xl shadow-md min-w-[120px]"
                   >
                     GET PDF
                   </Button>
@@ -289,7 +313,7 @@ const TripPDFButton: React.FC = () => {
                       setEndDate("");
                       generatePDF();
                     }}
-                    className="bg-[color:var(--teal)] hover:bg-[color:var(--sky)] text-white px-4 py-2 rounded-xl shadow-md"
+                    className="bg-[color:var(--orange)] hover:bg-[color:var(--yellow)] text-white px-4 py-2 rounded-xl shadow-md min-w-[120px]"
                   >
                     GET PDF
                   </Button>
@@ -301,7 +325,7 @@ const TripPDFButton: React.FC = () => {
           )}
         </div>
       </Card>
-    </div>
+     </div>
   );
 };
 

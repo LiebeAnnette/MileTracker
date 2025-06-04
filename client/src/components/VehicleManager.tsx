@@ -17,7 +17,6 @@ import { baseFieldStyles } from "../../styles/styles";
 import confetti from "canvas-confetti";
 import MaintenanceAlerts from "./MaintenanceAlerts";
 
-
 const VehicleManager: React.FC = () => {
   const { data, loading, error } = useQuery(GET_VEHICLES);
 
@@ -239,15 +238,16 @@ const VehicleManager: React.FC = () => {
                 className="bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-2xl shadow-lg p-6 space-y-4 transition hover:shadow-xl"
               >
                 {/* Top row with title and vehicle controls */}
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-2xl font-extrabold text-[color:var(--prussian)] tracking-wide">
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-wrap items-baseline gap-2 text-[color:var(--prussian)]">
+                    <span className="text-2xl font-extrabold tracking-wide">
                       {v.name}
-                    </div>
-                    <div className="text-sm font-medium text-gray-600 italic">
+                    </span>
+                    <span className="text-sm font-medium text-gray-600 italic">
                       {v.make} {v.vehicleModel}
-                    </div>
+                    </span>
                   </div>
+
                   <div className="flex gap-2">
                     <Button
                       onClick={() =>
@@ -307,25 +307,26 @@ const VehicleManager: React.FC = () => {
                         (reminder: any, i: number) => (
                           <li
                             key={i}
-                            className="bg-white bg-opacity-80 border border-[color:var(--sky)] rounded-lg p-3 flex justify-between items-start shadow-sm"
+                            className="bg-white bg-opacity-80 border-2 border-[color:var(--prussian)] rounded-lg p-3 flex flex-col gap-2 shadow-sm"
                           >
                             <div>
-                              <div className="font-medium text-[color:var(--prussian)]">
-                                {reminder.name}:
-                              </div>
-                              <div>
-                                {reminder.mileage.toLocaleString()} miles
+                              <div className="flex flex-wrap gap-1 text-[color:var(--prussian)] font-medium">
+                                <span>{reminder.name}:</span>
+                                <span>
+                                  {reminder.mileage.toLocaleString()} miles
+                                </span>
                               </div>
 
                               {reminder.lastResetMileage !== undefined && (
                                 <span>
-                                  {/* (Last reset at{" "}
+                                  (Last reset at{" "}
                                   {reminder.lastResetMileage.toLocaleString()}{" "}
-                                  mi) */}
+                                  mi)
                                 </span>
                               )}
                             </div>
-                            <div className="inline-flex gap-2 ml-4">
+
+                            <div className="flex flex-wrap gap-2">
                               <Button
                                 onClick={() =>
                                   handleReminderEdit(
@@ -334,7 +335,7 @@ const VehicleManager: React.FC = () => {
                                     reminder.mileage
                                   )
                                 }
-                                className="text-xs px-2 py-1"
+                                className="text-xs px-3 py-1"
                               >
                                 Edit
                               </Button>
@@ -342,7 +343,7 @@ const VehicleManager: React.FC = () => {
                                 onClick={() =>
                                   handleReminderReset(v._id, reminder.name)
                                 }
-                                className="text-xs px-2 py-1"
+                                className="text-xs px-3 py-1"
                               >
                                 Reset
                               </Button>
@@ -350,7 +351,7 @@ const VehicleManager: React.FC = () => {
                                 onClick={() =>
                                   handleReminderDelete(v._id, reminder.name)
                                 }
-                                className="text-xs px-2 py-1 bg-red-600 hover:bg-red-700"
+                                className="text-xs px-3 py-1 bg-red-600 hover:bg-red-700"
                               >
                                 Delete Reminder
                               </Button>

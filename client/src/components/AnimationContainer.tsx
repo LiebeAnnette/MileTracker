@@ -7,10 +7,10 @@ const backgrounds = [
   "/image3.jpg",
   "/image4.jpg",
   "/image5.jpg",
-  "/image6.jpg",
+  "/image6.png",
   "/image7.jpg",
   "/image8.jpg",
-  "/image9.jpg",
+  "/image9.png",
   "/image10.jpg",
 ];
 

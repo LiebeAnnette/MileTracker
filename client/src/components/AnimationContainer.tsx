@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
 import LottieAnimation from "./LottieAnimation";
 
-const backgrounds = ["/image1.jpg", "/lake.jpg", "/image2.jpg", "/image4.jpg"];
+const backgrounds = [
+  "/image1.jpg",
+  "/image2.jpg",
+  "/image3.jpg",
+  "/image4.jpg",
+  "/image5.jpg",
+  "/image6.png",
+  "/image7.jpg",
+  "/image8.jpg",
+  "/image9.png",
+  "/image10.jpg",
+];
 
 const AnimationContainer: React.FC = () => {
   const [bgIndex, setBgIndex] = useState(0);
@@ -16,7 +27,7 @@ const AnimationContainer: React.FC = () => {
         } while (next === prev); // Avoid repeating the same image
         return next;
       });
-    }, 1000); // 8000ms = 8 seconds
+    }, 8000); // 8000ms = 8 seconds
 
     return () => clearInterval(interval);
   }, []);

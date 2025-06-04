@@ -21,6 +21,12 @@ const Navbar: React.FC = () => {
           <h2 className="nav-title">MileTracker</h2>
         </div>
 
+        <div className="nav-status">
+          <span className="text-sm font-medium text-white">
+            {token ? "Logged in" : "Logged out"}
+          </span>
+        </div>
+
         {token && (
           <div className="nav-content">
             <div className="nav-links">

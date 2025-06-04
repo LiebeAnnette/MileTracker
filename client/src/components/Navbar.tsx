@@ -5,7 +5,6 @@ import "../../styles/navbar.css";
 
 const Navbar: React.FC = () => {
   const { token, setToken } = useAuth();
-
   const handleLogout = () => {
     setToken(null);
   };

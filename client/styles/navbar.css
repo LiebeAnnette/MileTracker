@@ -85,10 +85,9 @@ nav button:hover {
 }
 
 .logo-icon {
-  width: 100px;
-  height: 100px;
-  position: absolute;
-  left: 0;
-  top: 100%;
-  transform: translateY(-50%);
+  width: 60px; /* make it smaller for mobile */
+  height: auto;
+  position: static; /* remove absolute */
+  transform: none;
 }
+

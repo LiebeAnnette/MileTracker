@@ -1,22 +1,64 @@
-import React from "react";
-//import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-//import {Routes} from "react-router";
+import React, { useEffect, useRef } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "./components/Home";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import TripForm from "./components/TripForm";
 import TripDashboard from "./components/TripDashboard";
 import TripPDFButton from "./components/TripPDFButton";
 import AuthForm from "./components/AuthForm";
- // import LogoutButton from "./components/LogoutButton";
-import { useAuth } from "./context/AuthContext";
 import VehicleManager from "./components/VehicleManager";
 import MaintenanceAlerts from "./components/MaintenanceAlerts";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ExpenseManager from "./components/ExpenseManager";
+import { useAuth } from "./context/AuthContext";
 
 const App: React.FC = () => {
-  const { token } = useAuth();
+  const { token, setToken } = useAuth();
+  const INACTIVITY_LIMIT = 15 * 60 * 1000; // FOR DEPLOY 15 minutes
+  // const INACTIVITY_LIMIT = 5000; // FOR TESTING 5 seconds
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ✅ This function will be reused and avoids the warning
+  const resetTimer = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    timeoutRef.current = setTimeout(() => {
+      console.log("Logging out due to inactivity...");
+      setToken(null);
+      localStorage.removeItem("token");
+      alert("You were logged out due to inactivity.\nPlease log in again :)");
+    }, INACTIVITY_LIMIT);
+  };
+
+  useEffect(() => {
+    if (!token) return;
+
+    const activityEvents = [
+      "mousemove",
+      "keydown",
+      "click",
+      "scroll",
+      "touchstart",
+    ];
+
+    activityEvents.forEach((event) =>
+      window.addEventListener(event, resetTimer)
+    );
+
+    resetTimer(); // Start the initial timer
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      activityEvents.forEach((event) =>
+        window.removeEventListener(event, resetTimer)
+      );
+    };
+  }, [token]);
 
   if (!token) {
     return <AuthForm />;
@@ -24,46 +66,24 @@ const App: React.FC = () => {
 
   return (
     <Router>
-     <div className="mainpage">
-      <Navbar />
-      <div className="flex-1">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/trips" element={<TripDashboard />} />
-        <Route path="/add-trip" element={<TripForm />} />
-        <Route path="/vehicles" element={<VehicleManager />} />
-        <Route path="/alerts" element={<MaintenanceAlerts />} />
-        <Route path="/pdf" element={<TripPDFButton />} />
-        <Route path="*" element={<Navigate to="/" />} />
-        <Route path="/expenses" element={<ExpenseManager />} />
-      </Routes>
-      </div>
-      <Footer />
+      <div className="mainpage">
+        <Navbar />
+        <div className="flex-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/trips" element={<TripDashboard />} />
+            <Route path="/add-trip" element={<TripForm />} />
+            <Route path="/vehicles" element={<VehicleManager />} />
+            <Route path="/alerts" element={<MaintenanceAlerts />} />
+            <Route path="/pdf" element={<TripPDFButton />} />
+            <Route path="/expenses" element={<ExpenseManager />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </div>
+        <Footer />
       </div>
     </Router>
   );
-
-
-
-
-//   return (
-//     <div>
-//       <Navbar />
-//       {!token ? (
-//         <AuthForm />
-//       ) : (
-//         <div className="mainpage">
-//           {/* <LogoutButton /> */}
-//           <TripPDFButton />
-//           <VehicleManager />
-//           <MaintenanceAlerts />
-//           <TripForm />
-//           <TripDashboard />
-//         </div>
-//       )}
-//       <Footer />
-//     </div>
-//   );
- };
+};
 
 export default App;

@@ -10,7 +10,8 @@ import Card from "./Card";
 import Button from "./Button";
 import { baseFieldStyles, selectFieldStyles } from "../../styles/styles";
 import confetti from "canvas-confetti";
-import.meta.env.VITE_GOOGLE_API_KEY;
+
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const ADD_TRIP = gql`
   mutation AddTrip(
@@ -90,6 +91,11 @@ const US_STATES = [
 
 //Google API section Start
 const loadGoogleMapsScript = (apiKey: string) => {
+  if (!apiKey) {
+    console.error("Google Maps API key is missing!");
+    return Promise.reject("Missing API key");
+    
+  }
   if (window.google) return Promise.resolve();
 
   return new Promise<void>((resolve, reject) => {
@@ -155,7 +161,7 @@ const endStreetRef = useRef<HTMLInputElement | null>(null);
 useEffect(() => {
   const initAutocomplete = async () => {
     try {
-      await loadGoogleMapsScript(import.meta.env.VITE_GOOGLE_API_KEY);
+      await loadGoogleMapsScript(GOOGLE_API_KEY);
 
       if (window.google && startStreetRef.current) {
         const startAutocomplete = new google.maps.places.Autocomplete(
@@ -370,6 +376,7 @@ useEffect(() => {
               placeholder="Street (optional)"
               value={formState.endStreet}
               onChange={handleChange}
+              ref={endStreetRef}
             />
             <input
               className={baseFieldStyles}

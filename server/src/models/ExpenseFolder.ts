@@ -24,16 +24,7 @@ const expenseFolderSchema = new mongoose.Schema({
         type: Date, 
         default: Date.now, 
     },
-    expenses: [
-        {
-            category: {
-                type: String,
-                enum: ["Airfare", "Food", "Hotel", "Vehicle", "Miscellaneous"],
-            },
-            amount: Number,
-            description: String,
-        },
-    ],
+    expenses: [expenseItemSchema],
 });
 
 const ExpenseFolder = mongoose.model("ExpenseFolder", expenseFolderSchema);

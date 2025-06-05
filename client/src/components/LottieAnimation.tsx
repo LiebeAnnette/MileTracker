@@ -8,7 +8,13 @@ import CarAnimation3 from "../assets/CarAnimation3.json";
 const animations = [CarAnimation4, CarAnimation2, CarAnimation3];
 const LOOPS_PER_ANIMATION = 3;
 
-const LottieAnimation: React.FC = () => {
+interface LottieAnimationProps {
+  onAnimationCycleComplete?: () => void;
+}
+
+const LottieAnimation: React.FC<LottieAnimationProps> = ({
+  onAnimationCycleComplete,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loopCount, setLoopCount] = useState(0);
   const [isFading, setIsFading] = useState(false);
@@ -25,6 +31,7 @@ const LottieAnimation: React.FC = () => {
       if (prev + 1 >= LOOPS_PER_ANIMATION) {
         setIsFading(true); // Begin fade
         setTimeout(() => {
+          if (onAnimationCycleComplete) onAnimationCycleComplete(); // 🔥 call it!
           setCurrentIndex((prevIndex) => (prevIndex + 1) % animations.length);
           setLoopCount(0);
           setIsFading(false); // End fade
@@ -42,19 +49,20 @@ const LottieAnimation: React.FC = () => {
 
   return (
     <Suspense fallback={<div>Loading animation...</div>}>
-      <div className="relative w-full py-6 h-52 bg-[color:var(--off-white)] rounded-xl shadow-inner overflow-hidden">
+      <div className="relative w-full py-6 h-52 rounded-xl shadow-inner overflow-hidden">
         <div
           key={currentIndex}
           className={`absolute inset-0 flex justify-center items-center transition-opacity duration-300 ${
             isFading ? "opacity-0" : "opacity-100"
           }`}
         >
-          <div className="w-64 h-64 sm:w-80 sm:h-80">
+          <div className="w-40 h-40 sm:w-56 sm:h-56 flex items-center justify-center">
             <Lottie
               lottieRef={lottieRef}
               animationData={animations[currentIndex]}
               loop={false}
               onComplete={handleComplete}
+              style={{ width: "100%", height: "100%" }}
             />
           </div>
         </div>

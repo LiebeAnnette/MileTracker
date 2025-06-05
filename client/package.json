@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview --host",
-    "reload": "npm run build && npm run dev"
+    "reload": "npm run build && npm run dev",
+    "reloadPWA": "npm run build && npm run preview"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
@@ -40,6 +41,7 @@
     "rollup": "^3.29.4",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-plugin-pwa": "^1.0.0"
   }
 }

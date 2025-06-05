@@ -21,6 +21,8 @@ interface FolderCardProps {
 }
 
 const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
+    const totalCost = folder.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+
     return (
         <div className="folder-card">
             <h3>{folder.title}</h3>
@@ -39,6 +41,9 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
                     ))}
                 </ul>
             )}
+            <div className="folder-total">
+                <strong>Total:</strong> ${totalCost.toFixed(2)}
+            </div>
             <ExpenseForm folderId={folder._id} />
         </div>
     );

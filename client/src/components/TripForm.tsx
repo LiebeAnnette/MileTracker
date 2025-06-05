@@ -89,7 +89,6 @@ const US_STATES = [
   "WY",
 ];
 
-//Google API section Start
 const loadGoogleMapsScript = (apiKey: string) => {
   if (!apiKey) {
     console.error("Google Maps API key is missing!");
@@ -108,10 +107,6 @@ const loadGoogleMapsScript = (apiKey: string) => {
     document.head.appendChild(script);
   });
 };
-
-
-//Google API section End
-
 
 const getTodayDate = (): string => {
   const today = new Date();
@@ -154,7 +149,7 @@ const TripForm: React.FC<{ onTripAdded?: () => void }> = ({ onTripAdded }) => {
     },
   });
 
-  //Google code
+
 const startStreetRef = useRef<HTMLInputElement | null>(null);
 const endStreetRef = useRef<HTMLInputElement | null>(null);
 
@@ -221,8 +216,6 @@ useEffect(() => {
 
   initAutocomplete();
 }, []);
-//end of google code
-
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

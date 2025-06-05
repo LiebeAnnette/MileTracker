@@ -19,27 +19,27 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB limit
       },
       includeAssets: ["favicon.svg", "robots.txt", "apple-touch-icon.png"],
-      manifest: {
-        name: "MileTracker",
-        short_name: "MileTracker",
-        description: "Track your trips and mileage like a boss.",
-        theme_color: "#219ebc",
-        background_color: "#ffffff",
-        display: "standalone",
-        start_url: "/",
-        icons: [
-          {
-            src: "/pwa-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "/pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-        ],
-      },
+      // manifest: {
+      //   name: "MileTracker",
+      //   short_name: "MileTracker",
+      //   description: "Track your trips and mileage like a boss.",
+      //   theme_color: "#219ebc",
+      //   background_color: "#ffffff",
+      //   display: "standalone",
+      //   start_url: "/",
+      //   icons: [
+      //     {
+      //       src: "/pwa-192x192.png",
+      //       sizes: "192x192",
+      //       type: "image/png",
+      //     },
+      //     {
+      //       src: "/pwa-512x512.png",
+      //       sizes: "512x512",
+      //       type: "image/png",
+      //     },
+      //   ],
+      // },
     }),
   ],
   css: {

@@ -1,5 +1,7 @@
 import React from "react";
 import ExpenseForm from "./ExpenseForm";
+import "../../styles/expenseManager.css";
+
 
 interface Expense {
     category: string;
@@ -20,16 +22,15 @@ interface FolderCardProps {
 
 const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
     return (
-        <div style={{ border: "1px solid #ccc", padding: "1rem", borderRadius: "8px" }}>
+        <div className="folder-card">
             <h3>{folder.title}</h3>
-            <p style={{ color: "#777" }}>
-                Created on: {new Date(folder.createdAt).toLocaleDateString()}
+            <p className="folder-created">
+                Created on: {new Date(Number(folder.createdAt)).toLocaleDateString()}
             </p>
-
             {folder.expenses.length === 0 ? (
                 <p>No expenses added yet.</p>
             ) : (
-                <ul style={{ marginBottom: "1rem" }}>
+                <ul className="folder-expense-list">
                     {folder.expenses.map((expense, idx) => (
                         <li key={idx}>
                             <strong>{expense.category}</strong>: ${expense.amount.toFixed(2)}
@@ -38,7 +39,6 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
                     ))}
                 </ul>
             )}
-
             <ExpenseForm folderId={folder._id} />
         </div>
     );

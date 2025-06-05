@@ -3,6 +3,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import { GET_EXPENSE_FOLDERS } from "../graphql/expenseQueries";
 import { ADD_EXPENSE_FOLDER } from "../graphql/expenseMutations";
 import FolderCard from "./FolderCard";
+import "../../styles/expenseManager.css";
+
 
 const ExpenseManager: React.FC = () => {
     const [newTitle, setNewTitle] = useState("");
@@ -24,34 +26,36 @@ const ExpenseManager: React.FC = () => {
         }
     };
 
-    return (
-        <div style={{ padding: "1rem" }}>
-            <h2>Trip Expense Folders</h2>
+    if (loading) return <p>Loading folders...</p>;
+    if (error) return <p style={{ color: "red" }}>Error loading folders: {error.message}</p>;
 
-            <form onSubmit={handleCreateFolder} style={{ marginBottom: "1rem" }}>
+    return (
+        <div className="expense-container">
+            <h2 className="expense-title">Trip Expense Folders</h2>
+
+            <form onSubmit={handleCreateFolder} className="expense-form">
                 <input
                     type="text"
                     placeholder="New trip title"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     required
+                    className="expense-input"
                 />
-                <button type="submit">Create Folder</button>
+                <div className="bubble-button-wrapper">
+                    <div className="bubble-button">
+                        <button type="submit">Create Folder</button>
+                    </div>
+                </div>
             </form>
 
-            {loading ? (
-                <p>Loading folder...</p>
-            ) : error ? (
-                <p>Error loading folders: {error.message}</p>
-            ) : data?.getMyExpenseFolders.length === 0 ? (
-                <p>No folders yet. Create your first one!</p>
-            ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                    {data.getMyExpenseFolders.map((folder: any) => (
-                        <FolderCard key={folder._id} folder={folder} />
-                    ))}
-                </div>
-            )}
+            <div className="folder-grid">
+                {data.getMyExpenseFolders.map((folder: any) => (
+                    <div key={folder._id} className="folder-wrapper">
+                        <FolderCard folder={folder} />
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

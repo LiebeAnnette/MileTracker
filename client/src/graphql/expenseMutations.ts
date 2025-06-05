@@ -33,3 +33,18 @@ export const ADD_EXPENSE = gql `
       }
     }
 `;
+
+export const DELETE_EXPENSE = gql`
+  mutation DeleteExpenseFromFolder($folderId: ID!, $expenseIndex: Int!) {
+    deleteExpenseFromFolder(folderId: $folderId, expenseIndex: $expenseIndex) {
+      _id
+      title
+      createdAt
+      expenses {
+        category
+        description
+        amount
+      }
+    }
+  }
+`;

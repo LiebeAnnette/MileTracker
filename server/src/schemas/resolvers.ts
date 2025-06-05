@@ -320,6 +320,25 @@ export const resolvers = {
 
       return updatedFolder;
     },
+
+    deleteExpenseFromFolder: async (
+      _:any,
+      { folderId, expenseIndex }:any,
+      context: any
+    ) => {
+      if (!context.user) throw new Error("Not authenticated");
+
+      const folder = await ExpenseFolder.findOne({ _id: folderId, userId: context.user_id });
+
+      if (!folder) {
+        throw new Error("Folder not found");
+      }
+
+      folder.expenses.splice(expenseIndex, 1);
+      await folder.save();
+
+      return folder;
+    }
   },
 };
 

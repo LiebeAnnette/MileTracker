@@ -69,7 +69,7 @@ const typeDefs = gql`
     _id: ID!
     title: String!
     createdAt: String
-    expenses: [Expense]
+    expenses: [Expense!]!
   }
 
   type Mutation {
@@ -120,6 +120,8 @@ const typeDefs = gql`
       amount: Float!
       description: String
     ): ExpenseFolder
+
+    deleteExpenseFromFolder(folderId: ID!, expenseIndex: Int!): ExpenseFolder
   }
 `;
 

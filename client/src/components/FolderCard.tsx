@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import { useMutation } from "@apollo/client";
 import ExpenseForm from "./ExpenseForm";
+import { DELETE_EXPENSE } from "../graphql/expenseMutations";
 import "../../styles/expenseManager.css";
+import { FaTrash } from "react-icons/fa";
+
 
 
 interface Expense {
@@ -21,6 +25,26 @@ interface FolderCardProps {
 }
 
 const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
+    const [localExpenses, setLocalExpenses] = useState<Expense[]>(folder.expenses);
+
+  const [deleteExpense] = useMutation(DELETE_EXPENSE, {
+    onCompleted: (data) => {
+      setLocalExpenses(data.deleteExpenseFromFolder.expenses);
+    },
+    onError: (error) => {
+      console.error("Failed to delete expense:", error.message);
+    },
+  });
+
+  const handleDelete = (index: number) => {
+    deleteExpense({
+      variables: {
+        folderId: folder._id,
+        expenseIndex: index,
+      },
+    });
+  };
+
     const totalCost = folder.expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
     return (
@@ -29,14 +53,22 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
             <p className="folder-created">
                 Created on: {new Date(Number(folder.createdAt)).toLocaleDateString()}
             </p>
-            {folder.expenses.length === 0 ? (
+
+            {localExpenses.length === 0 ? (
                 <p>No expenses added yet.</p>
             ) : (
                 <ul className="folder-expense-list">
-                    {folder.expenses.map((expense, idx) => (
+                    {localExpenses.map((expense, idx) => (
                         <li key={idx}>
                             <strong>{expense.category}</strong>: ${expense.amount.toFixed(2)}
                             {expense.description && ` - ${expense.description}`}
+                            <button
+                                className="delete-expense-btn"
+                                onClick={() => handleDelete(idx)}
+                                title="Delete"
+                            >
+                                <FaTrash size={14} color="red" />
+                            </button>
                         </li>
                     ))}
                 </ul>

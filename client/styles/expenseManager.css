@@ -1,5 +1,7 @@
 .expense-container {
   padding: 1rem;
+  background-color: var(--teal);
+  min-height: 100vh;
 }
 
 .expense-title {
@@ -24,6 +26,7 @@
   border: 1px solid #ccc;
   width: 100%;
   max-width: 300px;
+  background-color: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 

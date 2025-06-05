@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const secret = process.env.JWT_SECRET!;
@@ -9,7 +10,9 @@ export function signToken(user: { _id: string; username: string }) {
   return jwt.sign({ data: user }, secret, { expiresIn: expiration });
 }
 
+
 export function authMiddleware({ req }: any) {
+
   let token = req.headers.authorization || "";
 
   if (token.startsWith("Bearer ")) {

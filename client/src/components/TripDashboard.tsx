@@ -60,6 +60,9 @@ const TripDashboard: React.FC = () => {
     selectedVehicle === "All" ? true : trip.vehicle?.name === selectedVehicle
   );
 
+  //Google directions Start
+
+  //Google directions End
   return (
     <Card
       title={
@@ -245,7 +248,7 @@ const TripDashboard: React.FC = () => {
                     </div>
                   ))}
 
-                  <div className="pt-2">
+                  <div className="pt-2 flex justify-between">
                     <Button
                       onClick={() =>
                         deleteTrip({ variables: { _id: trip._id } })
@@ -254,6 +257,19 @@ const TripDashboard: React.FC = () => {
                     >
                       Delete
                     </Button>
+                    {/* Start of direction button */}
+                    <Button
+                      onClick={() => {
+                        const origin = encodeURIComponent(trip.startLocation);
+                        const destination = encodeURIComponent(trip.endLocation);
+                        const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}`;
+                        window.open(directionsUrl, "_blank");
+                      }}
+                      className="bg-green-600 hover:bg-green-700 text-sm px-3 py-1"
+                    >
+                      Directions
+                    </Button>
+                    {/* End of direction button */}
                   </div>
                 </li>
               );

@@ -18,7 +18,8 @@ import ExpenseManager from "./components/ExpenseManager";
 import { useAuth } from "./context/AuthContext";
 
 // TODO: change to 30
-const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutes
+// const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutes
+const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes
 // const INACTIVITY_LIMIT = 5000; // 5 seconds FOR TESTING
 
 const App: React.FC = () => {

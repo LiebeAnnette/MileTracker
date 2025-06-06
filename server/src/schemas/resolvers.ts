@@ -362,9 +362,9 @@ export const resolvers = {
       }
 
       const expense = folder.expenses[expenseIndex];
-      expense.category = category;
-      expense.amount = amount;
-      expense.description = description;
+      if (category !== undefined) expense.category = category;
+      if (amount !== undefined) expense.amount = amount;
+      if (description !== undefined) expense.description = description;
 
       await folder.save();
       return folder;

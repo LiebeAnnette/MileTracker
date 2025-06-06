@@ -10,6 +10,8 @@ const Navbar: React.FC = () => {
     setToken(null);
   };
 
+const username = localStorage.getItem("username") || "Anonymous";
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -20,6 +22,7 @@ const Navbar: React.FC = () => {
             className="logo-icon"
           />
           <h2 className="nav-title">MileTracker</h2>
+          <h3 className="nav-user">Hello {username}</h3>
         </div>
 
         {token && (

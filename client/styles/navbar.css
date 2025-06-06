@@ -21,9 +21,9 @@ nav button:hover {
 .nav-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  position: relative;
+  justify-content: space-evenly;
+  gap: 1rem;
+  width: 100%;
 }
 .nav-links {
   display: flex;
@@ -46,13 +46,25 @@ nav button:hover {
   background-color: var(--sky);
   color: var(--prussian);
 }
+
+.nav-title,
+.nav-user {
+  margin-bottom: 0; /* remove bottom margin so they stay in line */
+  width: auto; /* remove the fixed width that may cause wrapping */
+}
+
 .nav-title {
   font-size: 2rem;
   font-weight: 800;
   text-transform: uppercase;
   text-align: center;
-  width: 100%;
-  margin-bottom: 0.5rem;
+}
+
+.nav-user {
+    font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 nav button {

@@ -6,7 +6,8 @@ import { GET_TRIPS_BY_VEHICLE } from "../graphql/tripQueries";
 import Card from "./Card";
 import Button from "./Button";
 import { selectFieldStyles } from "../../styles/styles";
-import LottieAnimation from "./LottieAnimation";
+// import LottieAnimation from "./LottieAnimation";
+import AnimationContainer from "./AnimationContainer";
 
 const GET_ALL_TRIPS = gql`
   query GetAllTrips {
@@ -197,7 +198,7 @@ const TripPDFButton: React.FC = () => {
               <p>
                 Choose a vehicle or select "All Vehicles" to generate a report.
               </p>
-              <p>Optional: Filter trips by Start and End dates.</p>
+              <p>Optional: Filter trips by Start/End dates.</p>
             </div>
           </div>
         </div>
@@ -226,8 +227,8 @@ const TripPDFButton: React.FC = () => {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-4 items-end">
-            <label className="flex flex-col text-sm font-semibold text-[color:var(--prussian)]">
+          <div className="flex flex-col sm:flex-row gap-4 items-start w-full max-w-md">
+            <label className="flex flex-col text-sm font-semibold text-[color:var(--prussian)] w-full">
               Start Date
               <input
                 type="date"
@@ -237,25 +238,26 @@ const TripPDFButton: React.FC = () => {
               />
             </label>
 
-            <div className="flex flex-col text-sm font-semibold text-[color:var(--prussian)]">
+            <label className="flex flex-col text-sm font-semibold text-[color:var(--prussian)] w-full">
               End Date
-              <div className="flex items-center gap-2">
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="mt-1 bg-[color:var(--off-white)] border border-[color:var(--pink)] rounded-xl px-4 py-2 shadow-sm text-black w-full"
-                />
-                <Button
-                  onClick={() => {
-                    setStartDate("");
-                    setEndDate("");
-                  }}
-                  className="mt-1 bg-[color:var(--sky)] hover:bg-[color:var(--teal)] text-white px-3 py-1 rounded shadow"
-                >
-                  Clear
-                </Button>
-              </div>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="mt-1 bg-[color:var(--off-white)] border border-[color:var(--pink)] rounded-xl px-4 py-2 shadow-sm text-black w-full"
+              />
+            </label>
+
+            <div className="w-full sm:w-auto">
+              <Button
+                onClick={() => {
+                  setStartDate("");
+                  setEndDate("");
+                }}
+                className="bg-[color:var(--sky)] hover:bg-[color:var(--teal)] text-white px-3 py-2 rounded-xl shadow w-full sm:w-auto"
+              >
+                Clear Dates
+              </Button>
             </div>
           </div>
 
@@ -265,10 +267,10 @@ const TripPDFButton: React.FC = () => {
             <p className="text-red-600">Error loading trips.</p>
           ) : (
             <div className="flex flex-col lg:flex-row gap-6 items-center w-full max-w-4xl">
-              <div className="space-y-4 flex-1 w-full">
+              <div className="space-y-4 w-full max-w-md">
                 <div className="bg-[color:var(--off-white)] border border-[color:var(--pink)] p-4 rounded-xl shadow flex items-center justify-between">
                   <span className="text-[color:var(--prussian)] font-semibold">
-                    Download Trips within date range
+                    Download Trips<br></br> within date range
                   </span>
                   <Button
                     onClick={generatePDF}
@@ -294,9 +296,7 @@ const TripPDFButton: React.FC = () => {
                 </div>
               </div>
 
-              <div className="w-full lg:w-1/3 flex justify-center">
-                <LottieAnimation />
-              </div>
+              <AnimationContainer />
             </div>
           )}
         </div>

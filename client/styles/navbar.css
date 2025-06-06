@@ -1,30 +1,61 @@
+/* Base navbar styling */
 nav {
-  background-color: var(--prussian);
   background-color: var(--prussian);
   color: white;
   font-family: var(--font-heading);
   padding: 1rem 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
 }
 
-nav h2 {
+/* Main container: centered and narrow */
+.navbar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+  gap: 1rem;
+  text-align: center;
+}
+
+/* Username greeting */
+.nav-user {
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: white;
+  margin: 0;
+}
+
+/* Logo + title stacked */
+.logo-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  width: 60px;
+  height: auto;
+}
+
+.nav-title {
   font-size: 2rem;
   font-weight: 800;
   text-transform: uppercase;
-  margin-bottom: 1rem;
+  margin: 0;
 }
 
-nav button:hover {
-  background-color: var(--yellow);
-}
-.nav-header {
+/* Navigation area */
+.nav-content {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  position: relative;
+  gap: 1rem;
 }
+
+/* Links container */
 .nav-links {
   display: flex;
   justify-content: center;
@@ -32,6 +63,7 @@ nav button:hover {
   gap: 1rem;
 }
 
+/* Individual link styles */
 .nav-links a {
   color: white;
   text-decoration: none;
@@ -46,13 +78,11 @@ nav button:hover {
   background-color: var(--sky);
   color: var(--prussian);
 }
-.nav-title {
-  font-size: 2rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  text-align: center;
-  width: 100%;
-  margin-bottom: 0.5rem;
+
+/* Logout button container */
+.logout-container {
+  display: flex;
+  justify-content: center;
 }
 
 nav button {
@@ -71,24 +101,23 @@ nav button:hover {
   background-color: var(--yellow);
 }
 
-.logout-container {
-  position: absolute;
-  top: 1rem;
-  right: 2rem;
-  z-index: 10;
-}
-.logo-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
+/* Responsive tweaks for wider screens */
+@media (min-width: 768px) {
+  .navbar-container {
+    flex-direction: column; /* still stack sections */
+    max-width: 100%;
+    padding: 0 2rem;
+  }
 
-.logo-icon {
-  width: 100px;
-  height: 100px;
-  position: absolute;
-  left: 0;
-  top: 100%;
-  transform: translateY(-50%);
+  .nav-content {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .logout-container {
+    justify-content: center;
+    margin: 0;
+  }
 }

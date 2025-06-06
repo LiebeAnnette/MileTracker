@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_EXPENSE } from "../graphql/expenseMutations";
 import { GET_EXPENSE_FOLDERS } from "../graphql/expenseQueries";
+import "../../styles/expenseManager.css";
 
 interface ExpenseFormProps {
     folderId: string;
@@ -71,12 +72,16 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ folderId }) => {
                 onChange={(e) => setDescription(e.target.value)}
             />
 
-            <button type="submit" disabled={loading}>
-                {loading ? "Adding..." : "Add Expense"}
-            </button>
+            <div className="bubble-button-wrapper">
+                <div className="bubble-button">
+                <button type="submit" disabled={loading}>
+                    {loading ? "Adding..." : "Add Expense"}
+                </button>
+            </div>
+        </div>
 
-            {error && <p style={{ color: "red" }}>Error: {error.message}</p>}
-        </form>
+        {error && <p className="folder-error">Error: {error.message}</p>}
+    </form>
     );
 };
 

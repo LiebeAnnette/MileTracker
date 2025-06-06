@@ -70,11 +70,7 @@ Register and log in with a username and password. Authenticated users have priva
 
 <!-- ### Expense Report Printer Page
 
-![Expense Report Printer Page](./images/<your-image-here>)
-
-### Google Maps Feature
-
-![Google Maps Feature](./images/<your-image-here>) -->
+![Expense Report Printer Page](./images/<your-image-here>)-->
 
 ---
 

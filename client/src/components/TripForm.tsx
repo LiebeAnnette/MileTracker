@@ -11,6 +11,8 @@ import Button from "./Button";
 import { baseFieldStyles, selectFieldStyles } from "../../styles/styles";
 import confetti from "canvas-confetti";
 
+// const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+
 const ADD_TRIP = gql`
   mutation AddTrip(
     $startLocation: String!
@@ -87,6 +89,25 @@ const US_STATES = [
   "WY",
 ];
 
+// const loadGoogleMapsScript = (apiKey: string) => {
+//   if (!apiKey) {
+//     console.error("Google Maps API key is missing!");
+//     return Promise.reject("Missing API key");
+    
+//   }
+//   if (window.google) return Promise.resolve();
+
+//   return new Promise<void>((resolve, reject) => {
+//     const script = document.createElement("script");
+//     script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+//     script.async = true;
+//     script.defer = true;
+//     script.onload = () => resolve();
+//     script.onerror = () => reject("Failed to load Google Maps script.");
+//     document.head.appendChild(script);
+//   });
+// };
+
 const getTodayDate = (): string => {
   const today = new Date();
   const offsetDate = new Date(
@@ -127,6 +148,74 @@ const TripForm: React.FC<{ onTripAdded?: () => void }> = ({ onTripAdded }) => {
       onTripAdded?.();
     },
   });
+
+
+// const startStreetRef = useRef<HTMLInputElement | null>(null);
+// const endStreetRef = useRef<HTMLInputElement | null>(null);
+
+// useEffect(() => {
+//   const initAutocomplete = async () => {
+//     try {
+//       await loadGoogleMapsScript(GOOGLE_API_KEY);
+
+//       if (window.google && startStreetRef.current) {
+//         const startAutocomplete = new google.maps.places.Autocomplete(
+//           startStreetRef.current,
+//           { types: ["address"], componentRestrictions: { country: "us" } }
+//         );
+
+//         startAutocomplete.addListener("place_changed", () => {
+//           const place = startAutocomplete.getPlace();
+//           if (place.address_components) {
+//             const city = place.address_components.find((c) =>
+//               c.types.includes("locality")
+//             )?.long_name;
+//             const state = place.address_components.find((c) =>
+//               c.types.includes("administrative_area_level_1")
+//             )?.short_name;
+
+//             setFormState((prev) => ({
+//               ...prev,
+//               startStreet: place.formatted_address || prev.startStreet,
+//               startCity: city || prev.startCity,
+//               startState: state || prev.startState,
+//             }));
+//           }
+//         });
+//       }
+
+//       if (window.google && endStreetRef.current) {
+//         const endAutocomplete = new google.maps.places.Autocomplete(
+//           endStreetRef.current,
+//           { types: ["address"], componentRestrictions: { country: "us" } }
+//         );
+
+//         endAutocomplete.addListener("place_changed", () => {
+//           const place = endAutocomplete.getPlace();
+//           if (place.address_components) {
+//             const city = place.address_components.find((c) =>
+//               c.types.includes("locality")
+//             )?.long_name;
+//             const state = place.address_components.find((c) =>
+//               c.types.includes("administrative_area_level_1")
+//             )?.short_name;
+
+//             setFormState((prev) => ({
+//               ...prev,
+//               endStreet: place.formatted_address || prev.endStreet,
+//               endCity: city || prev.endCity,
+//               endState: state || prev.endState,
+//             }));
+//           }
+//         });
+//       }
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   initAutocomplete();
+// }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -248,6 +337,7 @@ const TripForm: React.FC<{ onTripAdded?: () => void }> = ({ onTripAdded }) => {
               placeholder="Street (optional)"
               value={formState.startStreet}
               onChange={handleChange}
+              // ref={startStreetRef}
             />
             <input
               className={baseFieldStyles}
@@ -283,6 +373,7 @@ const TripForm: React.FC<{ onTripAdded?: () => void }> = ({ onTripAdded }) => {
               placeholder="Street (optional)"
               value={formState.endStreet}
               onChange={handleChange}
+              // ref={endStreetRef}
             />
             <input
               className={baseFieldStyles}

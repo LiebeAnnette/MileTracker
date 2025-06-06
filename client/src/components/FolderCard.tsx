@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import ExpenseForm from "./ExpenseForm";
 import { DELETE_EXPENSE } from "../graphql/expenseMutations";
@@ -25,18 +25,29 @@ interface FolderCardProps {
 }
 
 const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
-    const [localExpenses, setLocalExpenses] = useState<Expense[]>(folder.expenses);
+  const [localExpenses, setLocalExpenses] = useState<Expense[]>(folder.expenses);
+  
+  useEffect(() => {
+    setLocalExpenses(folder.expenses);
+    }, [folder.expenses]);
+
 
   const [deleteExpense] = useMutation(DELETE_EXPENSE, {
     onCompleted: (data) => {
       setLocalExpenses(data.deleteExpenseFromFolder.expenses);
     },
     onError: (error) => {
-      console.error("Failed to delete expense:", error.message);
+      console.error("Failed to delete expense:", error);
     },
   });
 
   const handleDelete = (index: number) => {
+    console.log("Deleting expense for index", index);
+    console.log("folderId:", folder._id);
+    console.log("Variables", {
+        folderId: folder._id,
+        expenseIndex: index,
+    });
     deleteExpense({
       variables: {
         folderId: folder._id,
@@ -45,7 +56,7 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
     });
   };
 
-    const totalCost = folder.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const totalCost = localExpenses.reduce((sum, expense) => sum + expense.amount, 0);
 
     return (
         <div className="folder-card">

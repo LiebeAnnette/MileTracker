@@ -223,29 +223,36 @@ const TripDashboard: React.FC = () => {
               return (
                 <li
                   key={trip._id}
-                  className="bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-xl p-3 shadow-sm text-base space-y-3"
+                  className="flex flex-col justify-between bg-[color:var(--sky)] bg-opacity-10 border border-[color:var(--sky)] rounded-xl p-3 shadow-sm text-base space-y-3"
                 >
-                  {tripDetails.map(({ label, content }) => (
-                    <div
-                      key={label}
-                      className="bg-[color:var(--off-white)] bg-opacity-90 border-2 border-[color:var(--pink)] p-2 rounded-lg space-y-1"
-                    >
-                      {["Date", "Miles", "Weather", "From", "To", "Vehicle"].includes(
-                        label
-                      ) ? (
-                        <div className="text-black">{content}</div>
-                      ) : (
-                        <>
-                          <h4 className="font-semibold text-[color:var(--prussian)]">
-                            {label}
-                          </h4>
+                  <div className="space-y-3">
+                    {tripDetails.map(({ label, content }) => (
+                      <div
+                        key={label}
+                        className="bg-[color:var(--off-white)] bg-opacity-90 border-2 border-[color:var(--pink)] p-2 rounded-lg space-y-1"
+                      >
+                        {[
+                          "Date",
+                          "Miles",
+                          "Weather",
+                          "From",
+                          "To",
+                          "Vehicle",
+                        ].includes(label) ? (
                           <div className="text-black">{content}</div>
-                        </>
-                      )}
-                    </div>
-                  ))}
+                        ) : (
+                          <>
+                            <h4 className="font-semibold text-[color:var(--prussian)]">
+                              {label}
+                            </h4>
+                            <div className="text-black">{content}</div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
 
-                  <div className="pt-2">
+                  <div className="pt-2 mt-auto self-start">
                     <Button
                       onClick={() =>
                         deleteTrip({ variables: { _id: trip._id } })

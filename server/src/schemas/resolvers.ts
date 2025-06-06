@@ -337,12 +337,38 @@ export const resolvers = {
       if (expenseIndex < 0 || expenseIndex >= folder.expenses.length) {
         throw new Error("Invalid expense index");
       }
-      
+
       folder.expenses.splice(expenseIndex, 1);
       await folder.save();
 
       return folder;
-    }
+    },
+
+    updateExpenseInFolder: async (
+      _: any,
+      { folderId, expenseIndex, category, amount, description }: any,
+      context: any
+    ) => {
+      if (!context.user) throw new AuthenticationError("Not authenticated");
+
+      const folder = await ExpenseFolder.findOne({
+        _id: folderId,
+        userId: context.user._id,
+      });
+
+      if (!folder) throw new Error("Folder not found");
+      if (expenseIndex < 0 || expenseIndex >= folder.expenses.length) {
+        throw new Error("Invalid expense index");
+      }
+
+      const expense = folder.expenses[expenseIndex];
+      expense.category = category;
+      expense.amount = amount;
+      expense.description = description;
+
+      await folder.save();
+      return folder;
+    },
   },
 };
 

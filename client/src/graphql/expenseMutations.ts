@@ -34,6 +34,33 @@ export const ADD_EXPENSE = gql `
     }
 `;
 
+export const UPDATE_EXPENSE = gql`
+  mutation UpdateExpenseInFolder(
+    $folderId: ID!
+    $expenseIndex: Int!
+    $category: String!
+    $amount: Float!
+    $description: String
+  ) {
+    updateExpenseInFolder(
+      folderId: $folderId
+      expenseIndex: $expenseIndex
+      category: $category
+      amount: $amount
+      description: $description
+    ) {
+      _id
+      title
+      createdAt
+      expenses {
+        category
+        description
+        amount
+      }
+    }
+  }
+`;
+
 export const DELETE_EXPENSE = gql`
   mutation DeleteExpenseFromFolder($folderId: ID!, $expenseIndex: Int!) {
     deleteExpenseFromFolder(folderId: $folderId, expenseIndex: $expenseIndex) {

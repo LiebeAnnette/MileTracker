@@ -51,9 +51,7 @@ const ExpenseManager: React.FC = () => {
 
             <div className="folder-grid">
                 {data.getMyExpenseFolders.map((folder: any) => (
-                    <div key={folder._id} className="folder-wrapper">
-                        <FolderCard folder={folder} />
-                    </div>
+                    <FolderCard key={folder._id} folder={folder} />
                 ))}
             </div>
         </div>

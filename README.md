@@ -68,6 +68,9 @@ Register and log in with a username and password. Authenticated users have priva
 
 ![Trip Report Printer Page](./images/MileTracker-TripReportPrinter.jpg)
 
+### Expense Manger Page
+![Expense Manger Page](./images/MileTracker-ExpenseManger.jpeg)
+
 <!-- ### Expense Report Printer Page
 
 ![Expense Report Printer Page](./images/<your-image-here>)-->

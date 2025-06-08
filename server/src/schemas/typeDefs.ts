@@ -122,6 +122,14 @@ const typeDefs = gql`
     ): ExpenseFolder
 
     deleteExpenseFromFolder(folderId: ID!, expenseIndex: Int!): ExpenseFolder
+
+    updateExpenseInFolder(
+      folderId: ID!
+      expenseIndex: Int!
+      category: String!
+      amount: Float!
+      description: String
+    ): ExpenseFolder
   }
 `;
 

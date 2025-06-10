@@ -150,7 +150,7 @@ const AuthForm: React.FC = () => {
 
             {loading && (
               <p className="text-sm text-gray-500 text-center">
-                Logging in... please wait ⏳
+                Logging in... please wait
               </p>
             )}
             {errorMessage && (

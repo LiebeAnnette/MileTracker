@@ -12,7 +12,7 @@ Built for the final project in my full-stack bootcamp, this app uses React, Apol
 - **Backend:** Node.js, Express, GraphQL (Apollo Server), Mongoose
 - **Database:** MongoDB Atlas
 - **Authentication:** JSON Web Tokens (JWT)
-- **APIs:** OpenRouteService (mileage), OpenWeatherMap (weather)
+- **APIs:** OpenRouteService (mileage), OpenWeatherMap (weather), UselessFacts and National Park Service (funfacts), and Google Maps
 - **CI/CD:** GitHub Actions
 - **Deployment:** Render
 
